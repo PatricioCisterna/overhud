@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/__GH_USER__/overhud/releases/latest/download/OverHud_1.0.0_x64-setup.exe"><b>⬇ Descargar OverHud para Windows</b></a>
+  <a href="https://github.com/PatricioCisterna/overhud/releases/latest/download/OverHud_1.0.0_x64-setup.exe"><b>⬇ Descargar OverHud para Windows</b></a>
   ·
-  <a href="https://github.com/__GH_USER__/overhud/releases">Todas las versiones</a>
+  <a href="https://github.com/PatricioCisterna/overhud/releases">Todas las versiones</a>
 </p>
 
 Overlay de voz para Discord: muestra quién está en tu canal y quién habla, encima del juego o de lo que tengas abierto. Es una versión modificada de [Overlayed](https://github.com/overlayeddev/overlayed), con más opciones.

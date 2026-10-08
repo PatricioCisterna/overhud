@@ -1,50 +1,46 @@
-# Overlayed
+# OverHud
 
 <p align="center">
-  <img src="https://github.com/overlayeddev/overlayed/assets/996134/b152c100-d06d-41d2-a795-32ea619fd1b5" height="128" />
+  <img src="apps/desktop/src-tauri/icons/stable/128x128@2x.png" height="128" />
 </p>
 
-<a href="https://discord.gg/eXmeNkVjye" target="_parent">
-<img alt="Discord" height=20 src="https://img.shields.io/discord/906349283358408704?style=&logo=discord&logoColor=white&label=%20&labelColor=5865F2&color=5865F2" />
-</a>
-<a href="https://twitter.com/OverlayedDev" target="_parent">
-<img alt="Twitter" height=20 src="https://img.shields.io/twitter/follow/overlayeddev.svg?style=&logo=twitter&logoColor=white&label=@OverlayedDev&labelColor=%231DA1F2&color=%231DA1F2" />
-</a>
-<a href="https://overlayed.dev/canary" target="_parent">
-<img alt="Canary Build" height=20 src="https://img.shields.io/github/actions/workflow/status/overlayeddev/overlayed/.github%2Fworkflows%2Fcanary.yaml?label=Canary Build" />
-</a>
+<p align="center">
+  <a href="https://github.com/__GH_USER__/overhud/releases/latest/download/OverHud_1.0.0_x64-setup.exe"><b>⬇ Descargar OverHud para Windows</b></a>
+  ·
+  <a href="https://github.com/__GH_USER__/overhud/releases">Todas las versiones</a>
+</p>
 
+Overlay de voz para Discord: muestra quién está en tu canal y quién habla, encima del juego o de lo que tengas abierto. Es una versión modificada de [Overlayed](https://github.com/overlayeddev/overlayed), con más opciones.
 
-A modern, open-source, and free voice chat overlay for Discord that supports Mac, Linux, and Windows!
+### Qué trae de nuevo
 
-### Installation
+- **Panel de sonidos**: tres puntos debajo del último participante abren un panel al estilo de Discord, con buscador, sonidos por servidor y recientes. Funciona aunque el overlay esté fijado.
+- **Español e inglés**: se elige en *Ajustes → Configuración*. La primera vez sigue el idioma de Windows.
+- **Recuerda el fijado**: si lo cerrás fijado, vuelve a abrir fijado y en el mismo lugar.
+- **Abrir al iniciar Windows**: interruptor en la configuración.
+- **Mostrar u ocultar nombres**: sin nombres solo quedan los avatares, con el icono de silenciado encima.
+- **Instalador liviano**: unos 5 MB, no pide permisos de administrador.
 
-#### Windows - Winget
+### Instalación (Windows)
+
+1. Descargá el instalador desde el enlace de arriba y abrilo.
+2. Windows puede mostrar *"Windows protegió su PC"* porque el instalador no está firmado. Pulsá **Más información → Ejecutar de todas formas**.
+3. Al abrir OverHud, Discord te pide autorizar la app. Entre los permisos aparece uno para controlar la voz: es el que usa el panel de sonidos para reproducirlos en tu canal.
+
+> Si Windows lo bloquea sin dar opción, tenés activado el *Control inteligente de aplicaciones*, que solo deja abrir programas firmados.
+
+### Compilarlo vos mismo
+
+Necesitás Node 20, pnpm 9, Rust y las herramientas de C++ de Visual Studio.
 
 ```
-winget install OverlayedDev.Overlayed
+pnpm install
+cd apps/desktop
+pnpm run build:desktop:unsigned
 ```
 
-#### MacOS - Homebrew
+El instalador queda en `apps/desktop/src-tauri/target/release/bundle/nsis/`.
 
-```
-brew install overlayed
-```
+### Créditos y licencia
 
-#### Linux - Flathub
-
-```
-flatpak install flathub dev.overlayed.Overlayed
-```
-
-#### Guides for all Platforms
-
-https://overlayed.dev/blog/installation-guide
-
-### Contributing
-
-If you want to help out please see [CONTRIBUTING.md](./CONTRIBUTING.md) to see how to get started.
-
-### Support
-
-If you enjoy this project consider giving it a star ⭐.
+OverHud está basado en [Overlayed](https://github.com/overlayeddev/overlayed), del equipo de Overlayed, y se distribuye bajo la misma licencia, [AGPL-3.0](./LICENSE). No está afiliado a Overlayed ni a Discord. Discord es una marca de Discord Inc.

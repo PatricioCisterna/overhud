@@ -33,6 +33,9 @@ export interface OverlayedConfig {
   showUsernames: boolean;
   showSoundboardButton: boolean;
   animateAvatars: boolean;
+  showScreenshareButton: boolean;
+  /** vertical space above and below each user, in px */
+  userSpacing: number;
 }
 
 export type OverlayedConfigKey = keyof OverlayedConfig;
@@ -55,6 +58,8 @@ export const DEFAULT_OVERLAYED_CONFIG: OverlayedConfig = {
   showUsernames: true,
   showSoundboardButton: true,
   animateAvatars: true,
+  showScreenshareButton: true,
+  userSpacing: 8,
 };
 
 const CONFIG_FILE_NAME = "config.json";

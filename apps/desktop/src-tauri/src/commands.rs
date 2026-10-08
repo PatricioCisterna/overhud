@@ -143,6 +143,48 @@ pub fn open_soundboard(app: AppHandle, x: f64, y: f64, width: f64, height: f64) 
   let _ = popup.emit(SOUNDBOARD_OPENED, ());
 }
 
+/// Bring the discord window to the front, e.g. so its screenshare picker is visible.
+/// Windows only lets us do this right after the user clicked one of our windows.
+#[tauri::command]
+pub fn focus_discord() -> bool {
+  #[cfg(target_os = "windows")]
+  unsafe {
+    use windows_sys::Win32::Foundation::{BOOL, HWND, LPARAM};
+    use windows_sys::Win32::UI::WindowsAndMessaging::{
+      EnumWindows, GetWindowTextW, IsIconic, IsWindowVisible, SetForegroundWindow, ShowWindow,
+      SW_RESTORE,
+    };
+
+    // discord's main window title is "Discord" or "<channel> - Discord"
+    unsafe extern "system" fn find(hwnd: HWND, found: LPARAM) -> BOOL {
+      if IsWindowVisible(hwnd) == 0 {
+        return 1;
+      }
+      let mut buf = [0u16; 512];
+      let len = GetWindowTextW(hwnd, buf.as_mut_ptr(), buf.len() as i32);
+      let title = String::from_utf16_lossy(&buf[..len.max(0) as usize]);
+      if title == "Discord" || title.ends_with(" - Discord") {
+        *(found as *mut HWND) = hwnd;
+        return 0;
+      }
+      1
+    }
+
+    let mut hwnd: HWND = std::ptr::null_mut();
+    EnumWindows(Some(find), &mut hwnd as *mut HWND as LPARAM);
+    if hwnd.is_null() {
+      return false;
+    }
+    if IsIconic(hwnd) != 0 {
+      ShowWindow(hwnd, SW_RESTORE);
+    }
+    return SetForegroundWindow(hwnd) != 0;
+  }
+
+  #[cfg(not(target_os = "windows"))]
+  false
+}
+
 #[tauri::command]
 pub fn close_soundboard(app: AppHandle) {
   if let Some(popup) = app.get_webview_window(SOUNDBOARD_WINDOW_NAME) {

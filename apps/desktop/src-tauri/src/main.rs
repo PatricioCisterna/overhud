@@ -199,6 +199,7 @@ fn main() {
       clear_interactive_region,
       open_soundboard,
       close_soundboard,
+      focus_discord,
     ]);
 
   app

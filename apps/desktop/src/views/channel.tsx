@@ -15,6 +15,8 @@ export const ChannelView = ({ alignDirection }: { alignDirection: DirectionLR })
   const { value: userScale } = useConfigValue("userScale");
   const { value: vertical } = useConfigValue("vertical");
   const { value: showSoundboardButton } = useConfigValue("showSoundboardButton");
+  const { value: showScreenshareButton } = useConfigValue("showScreenshareButton");
+  const { value: userSpacing } = useConfigValue("userSpacing");
 
   const allUsers = Object.entries(users);
   let userList = showOnlyTalkingUsers ? allUsers.filter(([, item]) => item.talking) : allUsers;
@@ -49,8 +51,15 @@ export const ChannelView = ({ alignDirection }: { alignDirection: DirectionLR })
             userScale={userScale}
           />
         ))}
-        {showSoundboardButton && Object.keys(users).length > 0 && (
-          <SoundboardButton alignDirection={alignDirection} opacity={opacity} />
+        {(showSoundboardButton || showScreenshareButton) && Object.keys(users).length > 0 && (
+          <SoundboardButton
+            alignDirection={alignDirection}
+            opacity={opacity}
+            spacing={userSpacing}
+            scale={userScale}
+            showSoundboard={showSoundboardButton}
+            showScreenshare={showScreenshareButton}
+          />
         )}
       </div>
     </div>

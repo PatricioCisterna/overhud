@@ -23,6 +23,7 @@ export const User = ({
   const avatarUrl = avatarHash ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.jpg` : "/img/default.png";
   // discord marks animated avatars with an "a_" hash; like discord, they only move while talking
   const { value: animateAvatars } = useConfigValue("animateAvatars");
+  const { value: userSpacing } = useConfigValue("userSpacing");
   const animatedAvatarUrl = animateAvatars && avatarHash?.startsWith("a_")
     ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.gif`
     : null;
@@ -87,10 +88,12 @@ export const User = ({
   return (
     <div
       className={cn(
-        "flex gap-2 py-1 p-2 justify-start items-center transition-opacity",
+        "flex gap-2 px-2 justify-start items-center transition-opacity",
         alignDirection == "right" ? "flex-row-reverse" : "flex-row"
       )}
       style={{
+        paddingTop: userSpacing,
+        paddingBottom: userSpacing,
         ...(opacityTarget === "all" ? { opacity: opacityStyle } : {}),
         transform: scaleFactor !== 1 ? `scale(${scaleFactor})` : undefined,
         transformOrigin: scaleFactor !== 1 ? transformOrigin : undefined,

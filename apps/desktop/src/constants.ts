@@ -4,6 +4,7 @@ export const Event = {
   SoundboardSounds: "soundboard-sounds",
   SoundboardGuilds: "soundboard-guilds",
   SoundboardOpened: "soundboard-opened",
+  ScreenshareToggle: "screenshare-toggle",
   SoundboardPlay: "soundboard-play",
   SoundboardPlayResult: "soundboard-play-result",
 } as const;

@@ -27,6 +27,8 @@ export const Configuration = () => {
   const { value: showUsernames } = useConfigValue("showUsernames");
   const { value: showSoundboardButton } = useConfigValue("showSoundboardButton");
   const { value: animateAvatars } = useConfigValue("animateAvatars");
+  const { value: showScreenshareButton } = useConfigValue("showScreenshareButton");
+  const { value: userSpacing } = useConfigValue("userSpacing");
 
   return (
     // the settings window has a fixed height, so the list scrolls instead of being cut off
@@ -147,6 +149,49 @@ export const Configuration = () => {
             await emit("config_update", await Config.getConfig());
           }}
         />
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
+        <label
+          htmlFor="showScreenshareButton"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {t("config.showScreenshareButton")}
+        </label>
+        <Switch
+          id="showScreenshareButton"
+          checked={showScreenshareButton}
+          onCheckedChange={async () => {
+            await Config.set("showScreenshareButton", !showScreenshareButton);
+
+            await emit("config_update", await Config.getConfig());
+          }}
+        />
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
+        <label
+          htmlFor="userSpacing"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {t("config.userSpacing")}
+        </label>
+        <div className="flex items-center gap-4 w-1/2">
+          <div className="flex-1">
+            <Slider
+              value={[userSpacing]}
+              min={0}
+              max={16}
+              step={1}
+              onValueChange={async (val: number[]) => {
+                const newVal = val[0] ?? userSpacing;
+                await Config.set("userSpacing", Number(newVal));
+                await emit("config_update", await Config.getConfig());
+              }}
+            />
+          </div>
+          <div className="w-10 text-right">
+            <span className="text-sm">{userSpacing} px</span>
+          </div>
+        </div>
       </div>
       <div className="flex items-center justify-between h-8 mx-2">
         <label

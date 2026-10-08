@@ -96,6 +96,7 @@ const en = {
   "soundboard.played": "Sound played",
   "soundboard.failed": "Discord refused to play it",
   "soundboard.open": "Sounds",
+  "screenshare.toggle": "Share screen",
   "soundboard.search": "Find the perfect sound",
   "soundboard.results": "Results",
   "soundboard.recent": "Recent",
@@ -104,6 +105,8 @@ const en = {
   "soundboard.noResults": "No sounds match",
   "soundboard.unavailable": "Not available (needs Nitro)",
   "config.showSoundboardButton": "Show sounds button",
+  "config.showScreenshareButton": "Show screen share button",
+  "config.userSpacing": "Space between users",
 
   // updater
   "updater.updating": "Updating...",
@@ -202,6 +205,7 @@ const es: Record<TranslationKey, string> = {
   "soundboard.played": "Sonido reproducido",
   "soundboard.failed": "Discord no dejó reproducirlo",
   "soundboard.open": "Sonidos",
+  "screenshare.toggle": "Transmitir pantalla",
   "soundboard.search": "Encuentra el sonido perfecto",
   "soundboard.results": "Resultados",
   "soundboard.recent": "Recientes",
@@ -210,6 +214,8 @@ const es: Record<TranslationKey, string> = {
   "soundboard.noResults": "Ningún sonido coincide",
   "soundboard.unavailable": "No disponible (requiere Nitro)",
   "config.showSoundboardButton": "Mostrar botón de sonidos",
+  "config.showScreenshareButton": "Mostrar botón de transmitir",
+  "config.userSpacing": "Espacio entre usuarios",
 
   "updater.updating": "Actualizando...",
   "updater.available": "¡Hay una actualización! Clic aquí para actualizar",

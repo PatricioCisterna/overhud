@@ -18,6 +18,15 @@ import { getVersion } from "@tauri-apps/api/app";
 import { hash } from "@/utils/crypto";
 import { invoke } from "@tauri-apps/api/core";
 
+const REQUIRED_SCOPES = [
+  "identify",
+  "rpc",
+  // needed for PLAY_SOUNDBOARD_SOUND ("Not authenticated or invalid scope" without it)
+  "rpc.voice.write",
+  // needed for TOGGLE_SCREENSHARE
+  "rpc.screenshare.write",
+];
+
 export interface SoundboardGuild {
   name: string;
   icon_url: string | null;
@@ -158,6 +167,10 @@ class SocketManager {
       // resend what we already know so a freshly opened window gets it right away
       this.emitSoundboardGuilds();
     });
+    // TOGGLE_SCREENSHARE is undocumented; without a pid discord opens its own picker
+    listen(Event.ScreenshareToggle, () => {
+      this.send({ cmd: RPCCommand.TOGGLE_SCREENSHARE, args: {} });
+    });
     listen<{ guild_id?: string; sound_id: string }>(Event.SoundboardPlay, event => {
       this.send({ cmd: RPCCommand.PLAY_SOUNDBOARD_SOUND, args: event.payload });
     });
@@ -197,10 +210,7 @@ class SocketManager {
       args: {
         client_id: APP_ID,
         scopes: [
-          "identify",
-          "rpc",
-          // needed for PLAY_SOUNDBOARD_SOUND ("Not authenticated or invalid scope" without it)
-          "rpc.voice.write",
+          ...REQUIRED_SCOPES,
           // TODO: when we need soundboard we can enable these scopes
           // "guilds",
           // "rpc.notifications.read",
@@ -409,6 +419,15 @@ class SocketManager {
       // track error metric
       track(Metric.DiscordAuthed, 0);
     } else if (payload?.cmd === RPCCommand.AUTHENTICATE) {
+      // a token from an older version may lack scopes added since (soundboard, screenshare):
+      // drop it and ask discord to authorize again
+      const granted: string[] = payload.data?.scopes ?? [];
+      if (REQUIRED_SCOPES.some(scope => !granted.includes(scope))) {
+        this.userdataStore.clearAuth();
+        this.authenticate();
+        return;
+      }
+
       // track success metric
       track(Metric.DiscordAuthed, 1);
 
@@ -448,6 +467,7 @@ class SocketManager {
       };
       this.emitSoundboardGuilds();
     }
+
 
     if (payload.cmd === RPCCommand.PLAY_SOUNDBOARD_SOUND) {
       const failed = payload.evt === RPCEvent.ERROR;

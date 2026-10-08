@@ -41,6 +41,10 @@ anyhow = "1.0.86"
 log = "0.4.22"
 
 # macos dependencies
+[target.'cfg(target_os = "windows")'.dependencies]
+# already pulled in by tauri, used to bring discord to the front
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging"] }
+
 [target.'cfg(target_os = "macos")'.dependencies]
 objc = "0.2.7"
 cocoa = "0.26.0"

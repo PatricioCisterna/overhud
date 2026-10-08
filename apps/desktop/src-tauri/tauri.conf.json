@@ -20,6 +20,9 @@
     "windows": {
       "webviewInstallMode": {
         "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installerIcon": "icons/stable/icon.ico"
       }
     }
   },

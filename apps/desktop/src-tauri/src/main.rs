@@ -200,6 +200,7 @@ fn main() {
       open_soundboard,
       close_soundboard,
       focus_discord,
+      set_overlay_visible,
     ]);
 
   app

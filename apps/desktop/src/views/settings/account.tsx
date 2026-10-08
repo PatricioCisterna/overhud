@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { FTUE_PIN_TRAY_TIP_KEY } from "@/constants";
-import { exit } from "@tauri-apps/plugin-process";
 import * as dateFns from "date-fns";
-import { saveWindowState, StateFlags } from "@tauri-apps/plugin-window-state";
+import Config from "@/config";
+import { useConfigValue } from "@/hooks/use-config-value";
+import { emit } from "@tauri-apps/api/event";
 
 import { invoke } from "@tauri-apps/api/core";
 import { usePlatformInfo } from "@/hooks/use-platform-info";
@@ -20,7 +21,7 @@ import {
 import { useEffect, useState } from "react";
 import { usePin } from "@/hooks/use-pin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Pin } from "lucide-react";
+import { Pin, Power } from "lucide-react";
 import type { VoiceUser } from "@/types";
 import { useTranslation } from "@/i18n";
 import { es as esLocale } from "date-fns/locale";
@@ -184,7 +185,7 @@ export const AppInfo = () => {
 
 export const Account = () => {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const [showQuitDialog, setShowQuitDialog] = useState(false);
+  const { value: overlayEnabled } = useConfigValue("overlayEnabled");
   const [user, setUser] = useState<VoiceUser | null>(null);
   const [tokenExpires, setTokenExpires] = useState(localStorage.getItem("discord_access_token_expiry"));
   const { pin: pinned } = usePin();
@@ -307,42 +308,21 @@ export const Account = () => {
             </Dialog>
           </div>
 
-          <Dialog
-            onOpenChange={e => {
-              setShowQuitDialog(e);
+          {/* shows/hides the overlay without closing the app (quitting lives in the tray menu) */}
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-32 flex items-center justify-center"
+            onClick={async () => {
+              const next = !overlayEnabled;
+              await Config.set("overlayEnabled", next);
+              await invoke("set_overlay_visible", { visible: next });
+              await emit("config_update", await Config.getConfig());
             }}
-            open={showQuitDialog}
           >
-            <DialogTrigger asChild>
-              <Button size="sm" className="w-20">
-                {t("account.quit")}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="w-[80%]">
-              <form
-                onSubmit={async event => {
-                  event.preventDefault();
-                  await saveWindowState(StateFlags.POSITION && StateFlags.SIZE);
-                  await exit();
-                }}
-              >
-                <DialogHeader>
-                  <DialogTitle className="mb-4 text-xl text-white">{t("common.quitOverlayed")}</DialogTitle>
-                  <DialogDescription className="mb-4 text-xl text-white">
-                    {t("account.quitConfirm")}
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="secondary">{t("common.cancel")}</Button>
-                  </DialogClose>
-                  <Button variant="destructive" type="submit">
-                    {t("account.quit")}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+            <Power className={overlayEnabled ? "mr-2 h-4 w-4 text-green-400" : "mr-2 h-4 w-4 text-zinc-500"} size={16} />
+            {overlayEnabled ? t("account.overlayOn") : t("account.overlayOff")}
+          </Button>
         </div>
         <Developer />
         <AppInfo />

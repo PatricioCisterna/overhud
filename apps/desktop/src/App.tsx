@@ -18,6 +18,7 @@ import { cn } from "./utils/tw";
 import Config from "./config";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { emit, listen } from "@tauri-apps/api/event";
 
 function App() {
   useDisableWebFeatures();
@@ -42,6 +43,19 @@ function App() {
       // so the settings window doesn't apply it twice
       if (getCurrentWindow().label === "main" && config.pin) {
         await invoke("set_pin", { value: true });
+      }
+
+      // the on/off button is remembered between sessions
+      if (getCurrentWindow().label === "main" && !config.overlayEnabled) {
+        await invoke("set_overlay_visible", { visible: false });
+      }
+
+      // "Show OverHud" in the tray turns it back on
+      if (getCurrentWindow().label === "main") {
+        await listen("overlay-shown", async () => {
+          await Config.set("overlayEnabled", true);
+          await emit("config_update", await Config.getConfig());
+        });
       }
     })();
   }, []);

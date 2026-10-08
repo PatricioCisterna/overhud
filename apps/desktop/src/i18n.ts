@@ -55,6 +55,8 @@ const en = {
   "account.logoutConfirm": "Are you sure you want to log out of OverHud?",
   "account.confirmLogout": "Confirm Logout",
   "account.quit": "Quit",
+  "account.overlayOn": "Overlay on",
+  "account.overlayOff": "Overlay off",
   "account.quitConfirm": "Are you sure you want to quit the OverHud app?",
 
   // configuration
@@ -168,6 +170,8 @@ const es: Record<TranslationKey, string> = {
   "account.logoutConfirm": "¿Seguro que quieres cerrar sesión en OverHud?",
   "account.confirmLogout": "Cerrar sesión",
   "account.quit": "Cerrar",
+  "account.overlayOn": "Encendido",
+  "account.overlayOff": "Apagado",
   "account.quitConfirm": "¿Seguro que quieres cerrar OverHud?",
 
   "config.language": "Idioma",

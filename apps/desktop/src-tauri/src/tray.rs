@@ -3,7 +3,7 @@ use std::sync::Mutex;
 use tauri::{
   menu::{Menu, MenuBuilder, MenuEvent},
   tray::TrayIconBuilder,
-  AppHandle, LogicalSize, Manager, Wry,
+  AppHandle, Emitter, LogicalSize, Manager, Wry,
 };
 
 use anyhow::Result;
@@ -102,6 +102,9 @@ impl Tray {
         window.set_size(LogicalSize::new(400, 700)).unwrap();
 
         window.set_focus().unwrap();
+
+        // counts as turning the overlay on if it was switched off in settings
+        let _ = window.emit("overlay-shown", ());
       }
       TRAY_RELOAD => {
         let window = app.get_webview_window(MAIN_WINDOW_NAME).unwrap();

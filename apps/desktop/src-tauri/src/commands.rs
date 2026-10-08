@@ -185,6 +185,29 @@ pub fn focus_discord() -> bool {
   false
 }
 
+/// The on/off button: hide the overlay or bring it back without stealing focus.
+#[tauri::command]
+pub fn set_overlay_visible(app: AppHandle, visible: bool) {
+  let Some(window) = app.get_webview_window(MAIN_WINDOW_NAME) else {
+    return;
+  };
+  if !visible {
+    window.hide();
+    return;
+  }
+
+  #[cfg(target_os = "windows")]
+  if let Ok(hwnd) = window.hwnd() {
+    use windows_sys::Win32::UI::WindowsAndMessaging::{ShowWindow, SW_SHOWNOACTIVATE};
+    unsafe {
+      ShowWindow(hwnd.0 as _, SW_SHOWNOACTIVATE);
+    }
+    return;
+  }
+
+  window.show();
+}
+
 #[tauri::command]
 pub fn close_soundboard(app: AppHandle) {
   if let Some(popup) = app.get_webview_window(SOUNDBOARD_WINDOW_NAME) {

@@ -20,8 +20,9 @@ Overlay de voz para Discord: muestra quién está en tu canal y quién habla, en
 - **Abrir al iniciar Windows**: interruptor en la configuración.
 - **Mostrar u ocultar nombres**: sin nombres solo quedan los avatares, con el icono de silenciado encima.
 - **Avatares animados**: los GIF de perfil se mueven mientras esa persona habla, como en Discord. Se puede apagar.
-- **Botón de transmitir**: debajo de los tres puntos, abre la ventana de Discord para compartir pantalla (y la vuelve a cerrar si ya estás transmitiendo).
+- **Botón de transmitir**: debajo de los tres puntos, abre la ventana de Discord para compartir pantalla (se pone verde mientras transmitís y, si lo pulsás de nuevo, corta la transmisión).
 - **Espacio entre usuarios**: ajustable, para dejar la lista más junta o más separada.
+- **Ocultar en pantalla completa**: opcional, el overlay desaparece mientras un juego ocupa toda la pantalla y vuelve al salir.
 - **Instalador liviano**: unos 5 MB, no pide permisos de administrador.
 
 ### Instalación (Windows)

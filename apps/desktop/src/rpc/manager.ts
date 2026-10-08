@@ -18,6 +18,7 @@ import { getVersion } from "@tauri-apps/api/app";
 import { hash } from "@/utils/crypto";
 import { invoke } from "@tauri-apps/api/core";
 
+
 const REQUIRED_SCOPES = [
   "identify",
   "rpc",
@@ -25,8 +26,6 @@ const REQUIRED_SCOPES = [
   "rpc.voice.write",
   // needed for TOGGLE_SCREENSHARE
   "rpc.screenshare.write",
-  // needed for SCREENSHARE_STATE_UPDATE (the stream button shows whether you're live)
-  "rpc.screenshare.read",
 ];
 
 export interface SoundboardGuild {
@@ -335,6 +334,8 @@ class SocketManager {
     if (payload.evt === RPCEvent.VOICE_CHANNEL_SELECT) {
       if (payload.data.channel_id === null) {
         this.store.clearUsers();
+        // leaving the call ends any stream
+        this.store.setScreensharing(false);
 
         if (this.store.currentChannel) {
           this.channelEvents(RPCCommand.UNSUBSCRIBE, this.store.currentChannel.id);
@@ -449,11 +450,6 @@ class SocketManager {
         evt: RPCEvent.VOICE_CHANNEL_SELECT,
       });
 
-      // know when we start/stop streaming, even if it's done from discord itself
-      this.send({
-        cmd: RPCCommand.SUBSCRIBE,
-        evt: RPCEvent.SCREENSHARE_STATE_UPDATE,
-      });
 
       // try to find the user
       this.requestUserChannel();
@@ -485,8 +481,10 @@ class SocketManager {
       });
     }
 
-    if (payload.evt === RPCEvent.SCREENSHARE_STATE_UPDATE) {
-      this.store.setScreensharing(!!payload.data?.active);
+    // discord won't let this app subscribe to SCREENSHARE_STATE_UPDATE ("invalid scope"),
+    // so track it ourselves: every successful toggle flips it. Stopping from discord isn't seen.
+    if (payload.cmd === RPCCommand.TOGGLE_SCREENSHARE && payload.evt !== RPCEvent.ERROR) {
+      this.store.setScreensharing(!this.store.screensharing);
     }
 
     if (payload.evt === RPCEvent.SPEAKING_START || payload.evt === RPCEvent.SPEAKING_STOP) {

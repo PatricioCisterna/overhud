@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/PatricioCisterna/overhud/releases/latest/download/OverHud_1.0.0_x64-setup.exe"><b>⬇ Descargar OverHud para Windows</b></a>
+  <a href="https://github.com/PatricioCisterna/overhud/releases/latest/download/OverHud-setup.exe"><b>⬇ Descargar OverHud para Windows</b></a>
   ·
   <a href="https://github.com/PatricioCisterna/overhud/releases">Todas las versiones</a>
 </p>
@@ -19,6 +19,7 @@ Overlay de voz para Discord: muestra quién está en tu canal y quién habla, en
 - **Recuerda el fijado**: si lo cerrás fijado, vuelve a abrir fijado y en el mismo lugar.
 - **Abrir al iniciar Windows**: interruptor en la configuración.
 - **Mostrar u ocultar nombres**: sin nombres solo quedan los avatares, con el icono de silenciado encima.
+- **Avatares animados**: los GIF de perfil se mueven mientras esa persona habla, como en Discord. Se puede apagar.
 - **Instalador liviano**: unos 5 MB, no pide permisos de administrador.
 
 ### Instalación (Windows)

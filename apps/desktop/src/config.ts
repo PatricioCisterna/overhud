@@ -32,6 +32,7 @@ export interface OverlayedConfig {
   language: Language;
   showUsernames: boolean;
   showSoundboardButton: boolean;
+  animateAvatars: boolean;
 }
 
 export type OverlayedConfigKey = keyof OverlayedConfig;
@@ -53,6 +54,7 @@ export const DEFAULT_OVERLAYED_CONFIG: OverlayedConfig = {
   language: DEFAULT_LANGUAGE,
   showUsernames: true,
   showSoundboardButton: true,
+  animateAvatars: true,
 };
 
 const CONFIG_FILE_NAME = "config.json";

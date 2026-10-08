@@ -20,11 +20,12 @@ export const User = ({
 }) => {
   const { id, selfMuted, selfDeafened, talking, muted, deafened, avatarHash } = item;
 
-  // discord marks animated avatars with an "a_" hash; those have a .gif version
-  const avatarExtension = avatarHash?.startsWith("a_") ? "gif" : "jpg";
-  const avatarUrl = avatarHash
-    ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.${avatarExtension}`
-    : "/img/default.png";
+  const avatarUrl = avatarHash ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.jpg` : "/img/default.png";
+  // discord marks animated avatars with an "a_" hash; like discord, they only move while talking
+  const { value: animateAvatars } = useConfigValue("animateAvatars");
+  const animatedAvatarUrl = animateAvatars && avatarHash?.startsWith("a_")
+    ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.gif`
+    : null;
 
   const talkingClass = talking ? "border-green-500" : "border-zinc-800";
   const mutedClass = selfMuted || muted ? "text-zinc-400" : "";
@@ -108,6 +109,16 @@ export const User = ({
           alt="avatar"
           className="rounded-full w-8 h-8"
         />
+
+        {/* kept loaded on top of the still image and only shown while talking, so it doesn't flicker */}
+        {animatedAvatarUrl && (
+          <img
+            src={animatedAvatarUrl}
+            alt=""
+            className="absolute inset-0 rounded-full w-8 h-8"
+            style={{ opacity: talking ? 1 : 0 }}
+          />
+        )}
 
         {/* This is cheese string mode */}
         {renderCheeseMicIcon()}

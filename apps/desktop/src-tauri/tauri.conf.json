@@ -24,7 +24,7 @@
     }
   },
   "productName": "OverHud",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "identifier": "com.overhud.app",
   "plugins": {
     "updater": {

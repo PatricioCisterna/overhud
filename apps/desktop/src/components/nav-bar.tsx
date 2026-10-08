@@ -162,7 +162,7 @@ export const NavBar = ({
               {channelName}
             </div>
           ) : (
-            <div data-tauri-drag-region>Overlayed</div>
+            <div data-tauri-drag-region>OverHud</div>
           )}
         </div>
         {location.pathname !== "/settings" && (

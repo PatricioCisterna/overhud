@@ -28,8 +28,8 @@ impl Tray {
         (false, true) => "Unpin",
         (false, false) => "Pin",
       },
-      TRAY_SHOW_APP if es => "Mostrar Overlayed",
-      TRAY_SHOW_APP => "Show Overlayed",
+      TRAY_SHOW_APP if es => "Mostrar OverHud",
+      TRAY_SHOW_APP => "Show OverHud",
       TRAY_RELOAD if es => "Recargar",
       TRAY_RELOAD => "Reload App",
       TRAY_OPEN_DEVTOOLS_MAIN if es => "Abrir DevTools (ventana principal)",
@@ -65,7 +65,7 @@ impl Tray {
       .text(TRAY_RELOAD, l(TRAY_RELOAD))
       .text(TRAY_SETTINGS, l(TRAY_SETTINGS))
       .separator()
-      .text(OVERLAYED, format!("Overlayed v{version}"))
+      .text(OVERLAYED, format!("OverHud v{version}"))
       .text(TRAY_QUIT, l(TRAY_QUIT))
       .build()
   }

@@ -22,13 +22,13 @@ const en = {
 
   // main view
   "main.authorize": "Authorize Discord",
-  "main.disclaimer": "Overlayed is not affiliated with Discord. Discord is a trademark of Discord Inc.",
+  "main.disclaimer": "OverHud is based on Overlayed and is not affiliated with Discord. Discord is a trademark of Discord Inc.",
   "main.step1": "Discord should have opened a popup",
   "main.step2": 'Click "Authorize" within Discord',
   "main.step3": "Join a voice channel",
   "main.step4": "Enjoy 🥳",
   "main.tryAgain": "Try Again",
-  "common.quitOverlayed": "Quit Overlayed",
+  "common.quitOverlayed": "Quit OverHud",
   "common.cancel": "Cancel",
 
   // error view
@@ -41,21 +41,21 @@ const en = {
   "settings.configuration": "Configuration",
   "settings.joinHistory": "Join History",
   "settings.canary": "The canary build may be unstable (click to learn more)",
-  "settings.foundBug": "Found a bug? Please report them on the",
-  "settings.githubRepo": "github repo",
+  "settings.foundBug": "OverHud, based on",
+  "settings.githubRepo": "Overlayed (AGPL-3.0)",
 
   // account
   "account.openDevtools": "Open Devtools",
   "account.openConfigDir": "Open Config Dir",
-  "account.pleaseLogin": "Please Login to use Overlayed",
+  "account.pleaseLogin": "Please Login to use OverHud",
   "account.tokenExpires": "Token Expires",
   "account.pin": "Pin",
   "account.unpin": "Unpin",
   "account.logout": "Logout",
-  "account.logoutConfirm": "Are you sure you want to log out of Overlayed?",
+  "account.logoutConfirm": "Are you sure you want to log out of OverHud?",
   "account.confirmLogout": "Confirm Logout",
   "account.quit": "Quit",
-  "account.quitConfirm": "Are you sure you want to quit the Overlayed app?",
+  "account.quitConfirm": "Are you sure you want to quit the OverHud app?",
 
   // configuration
   "config.language": "Language",
@@ -107,8 +107,8 @@ const en = {
   // updater
   "updater.updating": "Updating...",
   "updater.available": "Update Available! Click here to update",
-  "updater.title": "Update Overlayed",
-  "updater.confirm": "Are you sure you want to update Overlayed?",
+  "updater.title": "Update OverHud",
+  "updater.confirm": "Are you sure you want to update OverHud?",
   "updater.update": "Update",
 };
 
@@ -133,13 +133,13 @@ const es: Record<TranslationKey, string> = {
   "nav.hintIcon": ".",
 
   "main.authorize": "Autorizar Discord",
-  "main.disclaimer": "Overlayed no está afiliado a Discord. Discord es una marca de Discord Inc.",
+  "main.disclaimer": "OverHud está basado en Overlayed y no está afiliado a Discord. Discord es una marca de Discord Inc.",
   "main.step1": "Discord debería haber abierto una ventana",
   "main.step2": 'Pulsa "Autorizar" en Discord',
   "main.step3": "Entra a un canal de voz",
   "main.step4": "Disfruta 🥳",
   "main.tryAgain": "Reintentar",
-  "common.quitOverlayed": "Salir de Overlayed",
+  "common.quitOverlayed": "Salir de OverHud",
   "common.cancel": "Cancelar",
 
   "error.title": "Error al conectar con Discord",
@@ -150,20 +150,20 @@ const es: Record<TranslationKey, string> = {
   "settings.configuration": "Configuración",
   "settings.joinHistory": "Historial",
   "settings.canary": "La versión canary puede ser inestable (clic para saber más)",
-  "settings.foundBug": "¿Encontraste un fallo? Repórtalo en el",
-  "settings.githubRepo": "repo de GitHub",
+  "settings.foundBug": "OverHud, basado en",
+  "settings.githubRepo": "Overlayed (AGPL-3.0)",
 
   "account.openDevtools": "Abrir DevTools",
   "account.openConfigDir": "Abrir carpeta de config",
-  "account.pleaseLogin": "Inicia sesión para usar Overlayed",
+  "account.pleaseLogin": "Inicia sesión para usar OverHud",
   "account.tokenExpires": "La sesión caduca",
   "account.pin": "Fijar",
   "account.unpin": "Soltar",
   "account.logout": "Salir",
-  "account.logoutConfirm": "¿Seguro que quieres cerrar sesión en Overlayed?",
+  "account.logoutConfirm": "¿Seguro que quieres cerrar sesión en OverHud?",
   "account.confirmLogout": "Cerrar sesión",
   "account.quit": "Cerrar",
-  "account.quitConfirm": "¿Seguro que quieres cerrar Overlayed?",
+  "account.quitConfirm": "¿Seguro que quieres cerrar OverHud?",
 
   "config.language": "Idioma",
   "config.launchOnStartup": "Abrir al iniciar Windows",
@@ -211,8 +211,8 @@ const es: Record<TranslationKey, string> = {
 
   "updater.updating": "Actualizando...",
   "updater.available": "¡Hay una actualización! Clic aquí para actualizar",
-  "updater.title": "Actualizar Overlayed",
-  "updater.confirm": "¿Seguro que quieres actualizar Overlayed?",
+  "updater.title": "Actualizar OverHud",
+  "updater.confirm": "¿Seguro que quieres actualizar OverHud?",
   "updater.update": "Actualizar",
 };
 

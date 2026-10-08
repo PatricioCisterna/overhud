@@ -1,24 +1,7 @@
-import { check, type Update } from "@tauri-apps/plugin-updater";
-import { useEffect, useState } from "react";
+import { type Update } from "@tauri-apps/plugin-updater";
 
-export const useUpdate = () => {
-  const [update, setUpdate] = useState<Update | null>(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const setupUpdater = async () => {
-      try {
-        const update = await check();
-
-        setUpdate(update);
-      } catch (error) {
-        console.error(error);
-        setError(JSON.stringify(error));
-      }
-    };
-
-    setupUpdater();
-  }, []);
-
-  return { update, error };
+// OverHud: the updater points at the official Overlayed releases, which would
+// install over this build and drop its changes, so update checks are off.
+export const useUpdate = (): { update: Update | null; error: string } => {
+  return { update: null, error: "" };
 };

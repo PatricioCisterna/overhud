@@ -7,7 +7,7 @@
     "devUrl": "http://localhost:1420"
   },
   "bundle": {
-    "createUpdaterArtifacts": "v1Compatible",
+    "createUpdaterArtifacts": false,
     "active": true,
     "targets": "all",
     "icon": [
@@ -19,13 +19,13 @@
     ],
     "windows": {
       "webviewInstallMode": {
-        "type": "offlineInstaller"
+        "type": "downloadBootstrapper"
       }
     }
   },
-  "productName": "Overlayed",
+  "productName": "OverHud",
   "version": "0.6.2",
-  "identifier": "com.overlayed.dev",
+  "identifier": "com.overhud.app",
   "plugins": {
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM5MDVDNEVFQTc2QzJBNDYKUldSR0tteW43c1FGeVhzUm9vNEJKUkFyUXhSS2lrZWRuV1p1VWx5Tkg5bUhEWDZrOGprbGNnWkQK",
@@ -42,7 +42,7 @@
         "decorations": false,
         "shadow": false,
         "label": "main",
-        "title": "Overlayed - Main",
+        "title": "OverHud - Main",
         "width": 420,
         "height": 600,
         "minHeight": 106,
@@ -55,7 +55,7 @@
         "visible": false,
         "label": "settings",
         "url": "#settings",
-        "title": "Overlayed - Settings",
+        "title": "OverHud - Settings",
         "width": 600,
         "height": 480
       },
@@ -69,7 +69,7 @@
         "skipTaskbar": true,
         "label": "soundboard",
         "url": "#soundboard",
-        "title": "Overlayed - Sounds",
+        "title": "OverHud - Sounds",
         "width": 520,
         "height": 560
       }

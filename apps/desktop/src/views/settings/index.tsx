@@ -4,19 +4,10 @@ import { Account } from "./account";
 import { JoinHistory } from "./join-history";
 import { useState } from "react";
 import { usePlatformInfo } from "@/hooks/use-platform-info";
-import { SiX, SiTwitch, SiDiscord, type IconType } from "@icons-pack/react-simple-icons";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { Configuration } from "./configuration";
 import { useTranslation } from "@/i18n";
 import { Soundboard } from "./soundboard";
-
-function Link({ icon: Icon, url }: { icon: IconType; url: string }) {
-  return (
-    <a className="text-gray-400 hover:text-gray-300" target="_blank" rel="noreferrer" href={url}>
-      <Icon />
-    </a>
-  );
-}
 
 export const SettingsView = ({ update }: { update: Update | null }) => {
   const { canary } = usePlatformInfo();
@@ -72,11 +63,6 @@ export const SettingsView = ({ update }: { update: Update | null }) => {
               {t("settings.githubRepo")}
             </a>
           </p>
-          <div className="flex grow pr-4 justify-end gap-3 ">
-            <Link icon={SiX} url="https://x.com/OverlayedDev" />
-            <Link icon={SiTwitch} url="https://twitch.tv/OverlayedDev" />
-            <Link icon={SiDiscord} url="https://discord.gg/eXmeNkVjye" />
-          </div>
         </div>
       </Tabs>
     </div>

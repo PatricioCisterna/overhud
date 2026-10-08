@@ -20,7 +20,11 @@ export const User = ({
 }) => {
   const { id, selfMuted, selfDeafened, talking, muted, deafened, avatarHash } = item;
 
-  const avatarUrl = avatarHash ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.jpg` : "/img/default.png";
+  // discord marks animated avatars with an "a_" hash; those have a .gif version
+  const avatarExtension = avatarHash?.startsWith("a_") ? "gif" : "jpg";
+  const avatarUrl = avatarHash
+    ? `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.${avatarExtension}`
+    : "/img/default.png";
 
   const talkingClass = talking ? "border-green-500" : "border-zinc-800";
   const mutedClass = selfMuted || muted ? "text-zinc-400" : "";

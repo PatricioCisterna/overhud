@@ -36,7 +36,6 @@ export interface OverlayedConfig {
   showScreenshareButton: boolean;
   /** vertical space above and below each user, in px */
   userSpacing: number;
-  hideInFullscreen: boolean;
 }
 
 export type OverlayedConfigKey = keyof OverlayedConfig;
@@ -61,7 +60,6 @@ export const DEFAULT_OVERLAYED_CONFIG: OverlayedConfig = {
   animateAvatars: true,
   showScreenshareButton: true,
   userSpacing: 8,
-  hideInFullscreen: false,
 };
 
 const CONFIG_FILE_NAME = "config.json";

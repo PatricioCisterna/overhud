@@ -108,6 +108,7 @@ pub fn open_soundboard(app: AppHandle, x: f64, y: f64, width: f64, height: f64) 
   let (popup_w, popup_h) = (size.width as f64, size.height as f64);
 
   let button_left = origin.x as f64 + x * scale;
+  let button_right = button_left + width * scale;
   let button_top = origin.y as f64 + y * scale;
   let button_bottom = button_top + height * scale;
   let gap = 6.0 * scale;
@@ -123,12 +124,17 @@ pub fn open_soundboard(app: AppHandle, x: f64, y: f64, width: f64, height: f64) 
     _ => (0.0, 0.0, f64::MAX / 4.0, f64::MAX / 4.0),
   };
 
-  // below the button when it fits, otherwise above it
-  let mut top = button_bottom + gap;
-  if top + popup_h > my + mh {
-    top = button_top - popup_h - gap;
+  // to the right of the button, or to its left when there's no room
+  let mut left = button_right + gap;
+  if left + popup_w > mx + mw {
+    left = button_left - popup_w - gap;
   }
-  let left = (button_left + width * scale / 2.0 - popup_w / 2.0).clamp(mx, (mx + mw - popup_w).max(mx));
+  // grow downwards from the button's top, or upwards from its bottom near the screen's bottom
+  let mut top = button_top;
+  if top + popup_h > my + mh {
+    top = button_bottom - popup_h;
+  }
+  let left = left.clamp(mx, (mx + mw - popup_w).max(mx));
   let top = top.clamp(my, (my + mh - popup_h).max(my));
 
   popup.set_position(tauri::PhysicalPosition::new(left as i32, top as i32));

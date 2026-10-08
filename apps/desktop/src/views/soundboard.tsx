@@ -61,9 +61,9 @@ const GuildIcon = ({ guild, size }: { guild?: SoundboardGuild; size: number }) =
 
 const Emoji = ({ sound }: { sound: Sound }) => {
   if (sound.emoji_id) {
-    return <img src={`https://cdn.discordapp.com/emojis/${sound.emoji_id}.webp?size=32`} alt="" className="w-5 h-5" />;
+    return <img src={`https://cdn.discordapp.com/emojis/${sound.emoji_id}.webp?size=32`} alt="" className="w-4 h-4 shrink-0" />;
   }
-  if (sound.emoji_name) return <span className="text-lg leading-none">{sound.emoji_name}</span>;
+  if (sound.emoji_name) return <span className="text-sm leading-none shrink-0">{sound.emoji_name}</span>;
   return null;
 };
 
@@ -189,46 +189,46 @@ export const SoundboardView = () => {
   }, [sounds, guilds, currentGuildId, recent, search, t]);
 
   return (
-    <div className="h-screen flex flex-col gap-3 p-3 rounded-lg bg-zinc-950 border border-zinc-700 text-white">
+    <div className="h-screen flex flex-col gap-2 p-2 rounded-lg bg-zinc-950 border border-zinc-700 text-white">
       <div className="flex items-center gap-2">
-        <div className="flex-1 flex items-center gap-2 px-3 h-11 rounded-lg border border-zinc-700 focus-within:border-indigo-500 bg-zinc-900">
-          <Search size={18} className="text-zinc-400" />
+        <div className="flex-1 flex items-center gap-2 px-2 h-8 rounded-md border border-zinc-700 focus-within:border-indigo-500 bg-zinc-900">
+          <Search size={14} className="text-zinc-400" />
           <input
             ref={searchRef}
             autoFocus
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder={t("soundboard.search")}
-            className="flex-1 bg-transparent outline-none text-base placeholder:text-zinc-500"
+            className="flex-1 min-w-0 bg-transparent outline-none text-sm placeholder:text-zinc-500"
           />
         </div>
         <button
-          className="p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
+          className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
           onClick={() => invoke("close_soundboard")}
         >
-          <X size={20} />
+          <X size={16} />
         </button>
       </div>
 
       {error && <p className="text-sm text-red-400">{`${t("soundboard.failed")}: ${error}`}</p>}
 
-      <div className="flex-1 flex gap-3 min-h-0">
+      <div className="flex-1 flex gap-2 min-h-0">
         {/* server rail */}
         {!search && (
-          <div className="flex flex-col items-center gap-2 overflow-auto nice-scroll pr-1">
+          <div className="flex flex-col items-center gap-1.5 overflow-y-auto overflow-x-hidden nice-scroll">
             {sections.map(section => (
               <button
                 key={section.id}
                 title={section.title}
-                className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 text-zinc-300 cursor-pointer"
+                className="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 text-zinc-300 cursor-pointer"
                 onClick={() => sectionRefs.current[section.id]?.scrollIntoView({ behavior: "smooth" })}
               >
                 {section.id === "recent" ? (
-                  <Clock size={20} />
+                  <Clock size={16} />
                 ) : section.id === DEFAULT_GROUP ? (
-                  <SiDiscord size={20} />
+                  <SiDiscord size={16} />
                 ) : (
-                  <GuildIcon guild={guilds[section.id]} size={40} />
+                  <GuildIcon guild={guilds[section.id]} size={32} />
                 )}
               </button>
             ))}
@@ -236,7 +236,7 @@ export const SoundboardView = () => {
         )}
 
         {/* sounds */}
-        <div className="flex-1 overflow-auto nice-scroll pr-1">
+        <div className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden nice-scroll pr-1">
           {sounds === null && <p className="text-sm text-zinc-400">{t("soundboard.loading")}</p>}
           {sounds !== null && sections.every(s => s.sounds.length === 0) && (
             <p className="text-sm text-zinc-400">{t("soundboard.noResults")}</p>
@@ -247,10 +247,10 @@ export const SoundboardView = () => {
               ref={el => {
                 sectionRefs.current[section.id] = el;
               }}
-              className="mb-3"
+              className="mb-2"
             >
               <button
-                className="flex items-center gap-2 mb-2 text-sm font-semibold text-zinc-300 hover:text-white cursor-pointer"
+                className="flex items-center gap-1.5 mb-1.5 text-xs font-semibold text-zinc-300 hover:text-white cursor-pointer"
                 onClick={() => setCollapsed(c => ({ ...c, [section.id]: !c[section.id] }))}
               >
                 {section.icon}
@@ -261,7 +261,7 @@ export const SoundboardView = () => {
                 />
               </button>
               {!collapsed[section.id] && (
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-1.5">
                   {section.sounds.map(sound => (
                     <button
                       key={`${section.id}-${sound.sound_id}`}
@@ -269,7 +269,7 @@ export const SoundboardView = () => {
                       disabled={!sound.available}
                       onClick={() => play(sound)}
                       className={cn(
-                        "h-11 px-2 rounded-lg bg-zinc-900 flex items-center justify-center gap-2 text-sm font-medium",
+                        "min-w-0 h-8 px-1.5 rounded-md bg-zinc-900 flex items-center justify-center gap-1 text-xs font-medium",
                         sound.available ? "hover:bg-zinc-800 cursor-pointer" : "opacity-40 cursor-not-allowed"
                       )}
                     >

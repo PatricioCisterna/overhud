@@ -30,6 +30,7 @@ export interface OverlayedConfig {
   userScale: number;
   hideTaskbarWhenPinned: boolean;
   language: Language;
+  showUsernames: boolean;
 }
 
 export type OverlayedConfigKey = keyof OverlayedConfig;
@@ -49,6 +50,7 @@ export const DEFAULT_OVERLAYED_CONFIG: OverlayedConfig = {
   userScale: 100,
   hideTaskbarWhenPinned: false,
   language: DEFAULT_LANGUAGE,
+  showUsernames: true,
 };
 
 const CONFIG_FILE_NAME = "config.json";

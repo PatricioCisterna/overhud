@@ -34,6 +34,10 @@ export const User = ({
   }
 
   const { value: maxUsernameLength } = useConfigValue("maxUsernameLength");
+  const { value: showUsernames } = useConfigValue("showUsernames");
+
+  // without the name box, the mute/deafen icon has to live on the avatar
+  const avatarOnly = alignDirection === "center" || !showUsernames;
 
   const displayName = (() => {
     const name = item.username ?? "";
@@ -67,7 +71,7 @@ export const User = ({
         className={cn(
           "absolute left-3 -bottom-2 pr-1 py-0.5 min-w-6 h-6 rounded-full",
           anyState ? "bg-black/80" : "bg-transparent",
-          alignDirection === "center" ? "flex" : "md:hidden"
+          avatarOnly ? "flex" : "md:hidden"
         )}
       >
         {icon}
@@ -110,7 +114,7 @@ export const User = ({
         className={cn(
           "max-w-[calc(100%-50px)] md:flex hidden pointer-events-none items-center rounded-md p-1 pl-2 pr-2",
           mutedClass,
-          alignDirection === "center" ? "hidden md:hidden" : undefined
+          avatarOnly ? "hidden md:hidden" : undefined
         )}
         style={{ backgroundColor: `rgba(40, 40, 40, ${opacityTarget === "username-box" ? opacity / 100 : 1})` }}
       >

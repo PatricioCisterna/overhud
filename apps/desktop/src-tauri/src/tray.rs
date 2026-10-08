@@ -63,8 +63,6 @@ impl Tray {
       .text(TRAY_TOGGLE_PIN, l(TRAY_TOGGLE_PIN))
       .text(TRAY_SHOW_APP, l(TRAY_SHOW_APP))
       .text(TRAY_RELOAD, l(TRAY_RELOAD))
-      .text(TRAY_OPEN_DEVTOOLS_MAIN, l(TRAY_OPEN_DEVTOOLS_MAIN))
-      .text(TRAY_OPEN_DEVTOOLS_SETTINGS, l(TRAY_OPEN_DEVTOOLS_SETTINGS))
       .text(TRAY_SETTINGS, l(TRAY_SETTINGS))
       .separator()
       .text(OVERLAYED, format!("Overlayed v{version}"))

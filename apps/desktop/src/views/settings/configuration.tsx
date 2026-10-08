@@ -24,6 +24,7 @@ export const Configuration = () => {
   const { value: maxUsernameLength } = useConfigValue("maxUsernameLength");
   const { value: userScale } = useConfigValue("userScale");
   const { value: hideTaskbarWhenPinned } = useConfigValue("hideTaskbarWhenPinned");
+  const { value: showUsernames } = useConfigValue("showUsernames");
 
   return (
     // the settings window has a fixed height, so the list scrolls instead of being cut off
@@ -89,6 +90,23 @@ export const Configuration = () => {
           onCheckedChange={async () => {
             const newBool = !showOnlyTalkingUsers;
             await Config.set("showOnlyTalkingUsers", newBool);
+
+            await emit("config_update", await Config.getConfig());
+          }}
+        />
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
+        <label
+          htmlFor="showUsernames"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {t("config.showUsernames")}
+        </label>
+        <Switch
+          id="showUsernames"
+          checked={showUsernames}
+          onCheckedChange={async () => {
+            await Config.set("showUsernames", !showUsernames);
 
             await emit("config_update", await Config.getConfig());
           }}

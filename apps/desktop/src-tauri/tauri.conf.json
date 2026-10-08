@@ -58,6 +58,20 @@
         "title": "Overlayed - Settings",
         "width": 600,
         "height": 480
+      },
+      {
+        "transparent": true,
+        "decorations": false,
+        "shadow": false,
+        "resizable": false,
+        "visible": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "label": "soundboard",
+        "url": "#soundboard",
+        "title": "Overlayed - Sounds",
+        "width": 520,
+        "height": 560
       }
     ],
     "withGlobalTauri": true,

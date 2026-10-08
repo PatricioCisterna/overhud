@@ -135,6 +135,7 @@ fn main() {
     .manage(Pinned(AtomicBool::new(false)))
     .manage(HideTaskbarWhenPinned(AtomicBool::new(false)))
     .manage(Language(Mutex::new("en".to_string())))
+    .manage(InteractiveRegion(Mutex::new(None)))
     .setup(move |app| {
       debug!("starting app...");
       let window = app.get_webview_window(MAIN_WINDOW_NAME).unwrap();
@@ -171,6 +172,9 @@ fn main() {
       // update the system tray
       Tray::update_tray(app.app_handle());
 
+      // let the soundboard button take clicks even while pinned
+      watch_interactive_region(app.app_handle().clone());
+
       // NOTE: always force settings window to be a certain size
       settings.set_size(LogicalSize {
         width: SETTINGS_WINDOW_WIDTH,
@@ -191,6 +195,10 @@ fn main() {
       set_hide_taskbar_when_pinned,
       open_config_dir,
       set_language,
+      set_interactive_region,
+      clear_interactive_region,
+      open_soundboard,
+      close_soundboard,
     ]);
 
   app
@@ -205,7 +213,7 @@ fn main() {
       {
         match we {
           WEvent::CloseRequested { api, .. } => {
-            if label == SETTINGS_WINDOW_NAME {
+            if label == SETTINGS_WINDOW_NAME || label == SOUNDBOARD_WINDOW_NAME {
               let win = app.get_webview_window(label.as_str()).unwrap();
               win.hide().unwrap();
             }
@@ -216,6 +224,13 @@ fn main() {
               std::process::exit(0);
             } else {
               api.prevent_close();
+            }
+          }
+
+          // the soundboard popup closes when you click anywhere else, like discord's
+          WEvent::Focused(false) if label == SOUNDBOARD_WINDOW_NAME => {
+            if let Some(win) = app.get_webview_window(label.as_str()) {
+              let _ = win.hide();
             }
           }
 

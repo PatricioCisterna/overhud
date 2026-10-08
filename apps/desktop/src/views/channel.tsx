@@ -1,5 +1,6 @@
 import type { DirectionLR } from "@/config";
 import { User } from "../components/user";
+import { SoundboardButton } from "../components/soundboard-button";
 import { cn } from "@/utils/tw";
 import { useAppStore } from "../store";
 import { useConfigValue } from "@/hooks/use-config-value";
@@ -13,6 +14,7 @@ export const ChannelView = ({ alignDirection }: { alignDirection: DirectionLR })
   const { value: opacityTarget } = useConfigValue("opacityTarget");
   const { value: userScale } = useConfigValue("userScale");
   const { value: vertical } = useConfigValue("vertical");
+  const { value: showSoundboardButton } = useConfigValue("showSoundboardButton");
 
   const allUsers = Object.entries(users);
   let userList = showOnlyTalkingUsers ? allUsers.filter(([, item]) => item.talking) : allUsers;
@@ -47,6 +49,9 @@ export const ChannelView = ({ alignDirection }: { alignDirection: DirectionLR })
             userScale={userScale}
           />
         ))}
+        {showSoundboardButton && Object.keys(users).length > 0 && (
+          <SoundboardButton alignDirection={alignDirection} opacity={opacity} />
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,11 @@
 export const Event = {
   UserLogUpdate: "user-log-update",
+  SoundboardRequest: "soundboard-request",
+  SoundboardSounds: "soundboard-sounds",
+  SoundboardGuilds: "soundboard-guilds",
+  SoundboardOpened: "soundboard-opened",
+  SoundboardPlay: "soundboard-play",
+  SoundboardPlayResult: "soundboard-play-result",
 } as const;
 
 /**

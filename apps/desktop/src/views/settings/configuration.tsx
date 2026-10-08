@@ -25,6 +25,7 @@ export const Configuration = () => {
   const { value: userScale } = useConfigValue("userScale");
   const { value: hideTaskbarWhenPinned } = useConfigValue("hideTaskbarWhenPinned");
   const { value: showUsernames } = useConfigValue("showUsernames");
+  const { value: showSoundboardButton } = useConfigValue("showSoundboardButton");
 
   return (
     // the settings window has a fixed height, so the list scrolls instead of being cut off
@@ -107,6 +108,23 @@ export const Configuration = () => {
           checked={showUsernames}
           onCheckedChange={async () => {
             await Config.set("showUsernames", !showUsernames);
+
+            await emit("config_update", await Config.getConfig());
+          }}
+        />
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
+        <label
+          htmlFor="showSoundboardButton"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {t("config.showSoundboardButton")}
+        </label>
+        <Switch
+          id="showSoundboardButton"
+          checked={showSoundboardButton}
+          onCheckedChange={async () => {
+            await Config.set("showSoundboardButton", !showSoundboardButton);
 
             await emit("config_update", await Config.getConfig());
           }}

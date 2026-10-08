@@ -11,12 +11,17 @@ import { useNavigate, type NavigateFunction, useLocation } from "react-router-do
 import { useEffect, useRef } from "react";
 import { RPCErrors } from "./errors";
 import { Metric, track, trackEvent } from "@/metrics";
-import { emit } from "@tauri-apps/api/event";
+import { emit, listen } from "@tauri-apps/api/event";
 import { Event } from "@/constants";
 import type { VoiceUser } from "@/types";
 import { getVersion } from "@tauri-apps/api/app";
 import { hash } from "@/utils/crypto";
 import { invoke } from "@tauri-apps/api/core";
+
+export interface SoundboardGuild {
+  name: string;
+  icon_url: string | null;
+}
 
 interface TokenResponse {
   access_token: string;
@@ -102,6 +107,16 @@ class SocketManager {
   public version: string | undefined;
   // @ts-expect-error need better types
   public soundBoardItemsResolver = Promise.withResolvers();
+  private soundboardGuilds: Record<string, SoundboardGuild> = {};
+
+  /** Send the known servers (name/icon) and the server we're in to the soundboard windows */
+  private emitSoundboardGuilds() {
+    const currentChannel = this.store.currentChannel as { guild_id?: string | null } | null;
+    emit(Event.SoundboardGuilds, {
+      guilds: this.soundboardGuilds,
+      currentGuildId: currentChannel?.guild_id ?? null,
+    });
+  }
 
   private navigate(url: string) {
     if (window.location.hash.includes("#settings")) return;
@@ -136,6 +151,16 @@ class SocketManager {
 
       await this.unpin();
     }
+
+    // the settings and soundboard windows have no socket, so they ask for soundboard actions through events
+    listen(Event.SoundboardRequest, () => {
+      this.send({ cmd: RPCCommand.GET_SOUNDBOARD_SOUNDS });
+      // resend what we already know so a freshly opened window gets it right away
+      this.emitSoundboardGuilds();
+    });
+    listen<{ guild_id?: string; sound_id: string }>(Event.SoundboardPlay, event => {
+      this.send({ cmd: RPCCommand.PLAY_SOUNDBOARD_SOUND, args: event.payload });
+    });
 
     // subscribe to local storage events to see if we need to move the user to the auth page
     window.addEventListener("storage", e => {
@@ -174,13 +199,14 @@ class SocketManager {
         scopes: [
           "identify",
           "rpc",
+          // needed for PLAY_SOUNDBOARD_SOUND ("Not authenticated or invalid scope" without it)
+          "rpc.voice.write",
           // TODO: when we need soundboard we can enable these scopes
           // "guilds",
           // "rpc.notifications.read",
           // TODO: how do you use other scopes 🤔
           // "rpc.activities.write",
           // "rpc.voice.read",
-          // "rpc.voice.write",
           // "rpc.video.read",
           // "rpc.video.write",
           // "rpc.screenshare.read",
@@ -279,6 +305,16 @@ class SocketManager {
     }
 
     if (payload.cmd === RPCCommand.GET_SOUNDBOARD_SOUNDS) {
+      const sounds: { guild_id?: string }[] = Array.isArray(payload.data) ? payload.data : [];
+      await emit(Event.SoundboardSounds, sounds);
+
+      // fetch name + icon of every server that has sounds (once per server)
+      const guildIds = new Set(sounds.map(s => s.guild_id).filter((id): id is string => !!id));
+      for (const guildId of guildIds) {
+        if (this.soundboardGuilds[guildId] || !/^\d{15,}$/.test(guildId)) continue;
+        this.send({ cmd: RPCCommand.GET_GUILD, args: { guild_id: guildId } });
+      }
+
       // update the Promise
       this.soundBoardItemsResolver.resolve(payload.data);
     }
@@ -405,6 +441,22 @@ class SocketManager {
       this.navigate("/channel");
     }
 
+    if (payload.cmd === RPCCommand.GET_GUILD && payload.evt !== RPCEvent.ERROR && payload.data?.id) {
+      this.soundboardGuilds[payload.data.id] = {
+        name: payload.data.name,
+        icon_url: payload.data.icon_url ?? null,
+      };
+      this.emitSoundboardGuilds();
+    }
+
+    if (payload.cmd === RPCCommand.PLAY_SOUNDBOARD_SOUND) {
+      const failed = payload.evt === RPCEvent.ERROR;
+      await emit(Event.SoundboardPlayResult, {
+        ok: !failed,
+        message: failed ? (payload.data?.message ?? "unknown error") : null,
+      });
+    }
+
     if (payload.evt === RPCEvent.SPEAKING_START || payload.evt === RPCEvent.SPEAKING_STOP) {
       const isSpeaking = payload.evt !== RPCEvent.SPEAKING_START;
       this.store.setTalking(payload.data.user_id, !isSpeaking);
@@ -473,7 +525,8 @@ export const useSocket = () => {
   const socketRef = useRef<SocketManager | null>(null);
 
   useEffect(() => {
-    if (location.pathname === "/settings") {
+    // only the overlay window talks to discord
+    if (location.pathname === "/settings" || location.pathname === "/soundboard") {
       return;
     }
 

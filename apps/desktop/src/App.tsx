@@ -3,6 +3,7 @@ import { MainView } from "./views/main";
 import { ChannelView } from "./views/channel";
 
 import { SettingsView } from "./views/settings";
+import { SoundboardView } from "./views/soundboard";
 import { ErrorView } from "./views/error";
 import { NavBar } from "./components/nav-bar";
 import { usePin } from "./hooks/use-pin";
@@ -53,6 +54,11 @@ function App() {
   const visibleClass = visible ? "opacity-100" : "opacity-0";
   const location = useLocation();
   const isSettingsWindow = location.pathname === "/settings";
+  const isSoundboardWindow = location.pathname === "/soundboard";
+
+  if (isSoundboardWindow) {
+    return <SoundboardView />;
+  }
 
   return (
     <div

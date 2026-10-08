@@ -7,6 +7,143 @@ use tauri::{image::Image, menu::Menu, AppHandle, Emitter, Manager, State, Webvie
 
 use crate::{constants::*, tray::Tray, HideTaskbarWhenPinned, Language, Pinned, TrayMenu};
 
+/// Rectangle (logical px, relative to the overlay window) that should still take
+/// clicks while the overlay is pinned, e.g. the soundboard button.
+pub struct InteractiveRegion(pub Mutex<Option<[f64; 4]>>);
+
+#[tauri::command]
+pub fn set_interactive_region(
+  region: State<InteractiveRegion>,
+  x: f64,
+  y: f64,
+  width: f64,
+  height: f64,
+) {
+  if let Ok(mut r) = region.0.lock() {
+    *r = Some([x, y, width, height]);
+  }
+}
+
+#[tauri::command]
+pub fn clear_interactive_region(region: State<InteractiveRegion>) {
+  if let Ok(mut r) = region.0.lock() {
+    *r = None;
+  }
+}
+
+/// While pinned the overlay ignores the mouse; this watches the cursor and only
+/// accepts clicks while it is over the interactive region.
+pub fn watch_interactive_region(app: AppHandle) {
+  std::thread::spawn(move || {
+    let mut prev_pinned = false;
+    let mut accepting = false;
+    loop {
+      std::thread::sleep(std::time::Duration::from_millis(40));
+
+      let pinned = app
+        .state::<Pinned>()
+        .load(std::sync::atomic::Ordering::Relaxed);
+      if pinned != prev_pinned {
+        // _set_pin just reset the cursor events itself
+        prev_pinned = pinned;
+        accepting = !pinned;
+      }
+      if !pinned {
+        continue;
+      }
+
+      let Some(window) = app.get_webview_window(MAIN_WINDOW_NAME) else {
+        continue;
+      };
+      let region = app
+        .state::<InteractiveRegion>()
+        .0
+        .lock()
+        .ok()
+        .and_then(|r| *r);
+
+      let inside = match (
+        region,
+        window.cursor_position(),
+        window.inner_position(),
+        window.scale_factor(),
+      ) {
+        (Some([x, y, w, h]), Ok(cursor), Ok(pos), Ok(scale)) => {
+          let left = pos.x as f64 + x * scale;
+          let top = pos.y as f64 + y * scale;
+          cursor.x >= left
+            && cursor.x <= left + w * scale
+            && cursor.y >= top
+            && cursor.y <= top + h * scale
+        }
+        _ => false,
+      };
+
+      if inside != accepting {
+        window.set_ignore_cursor_events(!inside);
+        accepting = inside;
+      }
+    }
+  });
+}
+
+/// Show the soundboard popup next to the button that opened it.
+/// The button rect is in logical px relative to the overlay window.
+#[tauri::command]
+pub fn open_soundboard(app: AppHandle, x: f64, y: f64, width: f64, height: f64) {
+  let (Some(main), Some(popup)) = (
+    app.get_webview_window(MAIN_WINDOW_NAME),
+    app.get_webview_window(SOUNDBOARD_WINDOW_NAME),
+  ) else {
+    return;
+  };
+
+  let scale = main.scale_factor().unwrap_or(1.0);
+  let Ok(origin) = main.inner_position() else {
+    return;
+  };
+  let Ok(size) = popup.outer_size() else {
+    return;
+  };
+  let (popup_w, popup_h) = (size.width as f64, size.height as f64);
+
+  let button_left = origin.x as f64 + x * scale;
+  let button_top = origin.y as f64 + y * scale;
+  let button_bottom = button_top + height * scale;
+  let gap = 6.0 * scale;
+
+  // keep it on the monitor the overlay is on
+  let (mx, my, mw, mh) = match main.current_monitor() {
+    Ok(Some(m)) => (
+      m.position().x as f64,
+      m.position().y as f64,
+      m.size().width as f64,
+      m.size().height as f64,
+    ),
+    _ => (0.0, 0.0, f64::MAX / 4.0, f64::MAX / 4.0),
+  };
+
+  // below the button when it fits, otherwise above it
+  let mut top = button_bottom + gap;
+  if top + popup_h > my + mh {
+    top = button_top - popup_h - gap;
+  }
+  let left = (button_left + width * scale / 2.0 - popup_w / 2.0).clamp(mx, (mx + mw - popup_w).max(mx));
+  let top = top.clamp(my, (my + mh - popup_h).max(my));
+
+  popup.set_position(tauri::PhysicalPosition::new(left as i32, top as i32));
+  popup.show();
+  popup.set_focus();
+  let _ = popup.emit(SOUNDBOARD_OPENED, ());
+}
+
+#[tauri::command]
+pub fn close_soundboard(app: AppHandle) {
+  if let Some(popup) = app.get_webview_window(SOUNDBOARD_WINDOW_NAME) {
+    popup.hide();
+  }
+}
+
 #[tauri::command]
 pub fn set_language(
   language: String,

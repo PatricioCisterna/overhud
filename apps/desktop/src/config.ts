@@ -31,6 +31,7 @@ export interface OverlayedConfig {
   hideTaskbarWhenPinned: boolean;
   language: Language;
   showUsernames: boolean;
+  showSoundboardButton: boolean;
 }
 
 export type OverlayedConfigKey = keyof OverlayedConfig;
@@ -51,6 +52,7 @@ export const DEFAULT_OVERLAYED_CONFIG: OverlayedConfig = {
   hideTaskbarWhenPinned: false,
   language: DEFAULT_LANGUAGE,
   showUsernames: true,
+  showSoundboardButton: true,
 };
 
 const CONFIG_FILE_NAME = "config.json";

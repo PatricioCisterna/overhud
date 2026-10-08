@@ -2,11 +2,13 @@
   "identifier": "desktop-capability",
   "windows": [
     "main",
-    "settings"
+    "settings",
+    "soundboard"
   ],
   "webviews": [
     "main",
-    "settings"
+    "settings",
+    "soundboard"
   ],
   "platforms": [
     "macOS",

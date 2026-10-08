@@ -8,6 +8,7 @@ import { SiX, SiTwitch, SiDiscord, type IconType } from "@icons-pack/react-simpl
 import type { Update } from "@tauri-apps/plugin-updater";
 import { Configuration } from "./configuration";
 import { useTranslation } from "@/i18n";
+import { Soundboard } from "./soundboard";
 
 function Link({ icon: Icon, url }: { icon: IconType; url: string }) {
   return (
@@ -29,10 +30,11 @@ export const SettingsView = ({ update }: { update: Update | null }) => {
           setCurrentTab(value);
         }}
       >
-        <TabsList className="grid w-full grid-cols-3 rounded-t-none">
+        <TabsList className="grid w-full grid-cols-4 rounded-t-none">
           <TabsTrigger value="account">{t("settings.general")}</TabsTrigger>
           <TabsTrigger value="configuration">{t("settings.configuration")}</TabsTrigger>
           <TabsTrigger value="join-history">{t("settings.joinHistory")}</TabsTrigger>
+          <TabsTrigger value="soundboard">{t("settings.soundboard")}</TabsTrigger>
         </TabsList>
         {canary && (
           <div className="h-[32px] bg-yellow-400 font-semibold text-black flex items-center justify-center">
@@ -48,6 +50,9 @@ export const SettingsView = ({ update }: { update: Update | null }) => {
           </TabsContent>
           <TabsContent tabIndex={-1} value="configuration">
             <Configuration />
+          </TabsContent>
+          <TabsContent tabIndex={-1} value="soundboard">
+            <Soundboard />
           </TabsContent>
           <TabsContent tabIndex={-1} forceMount value="join-history">
             <div style={{ display: currentTab === "join-history" ? "block" : "none" }}>

@@ -18,21 +18,57 @@ use crate::{
 pub struct Tray;
 
 impl Tray {
+  /// Label for a tray menu item in the given language ("en" or "es").
+  pub fn label(language: &str, id: &str, pinned: bool) -> &'static str {
+    let es = language == "es";
+    match id {
+      TRAY_TOGGLE_PIN => match (es, pinned) {
+        (true, true) => "Soltar",
+        (true, false) => "Fijar",
+        (false, true) => "Unpin",
+        (false, false) => "Pin",
+      },
+      TRAY_SHOW_APP if es => "Mostrar Overlayed",
+      TRAY_SHOW_APP => "Show Overlayed",
+      TRAY_RELOAD if es => "Recargar",
+      TRAY_RELOAD => "Reload App",
+      TRAY_OPEN_DEVTOOLS_MAIN if es => "Abrir DevTools (ventana principal)",
+      TRAY_OPEN_DEVTOOLS_MAIN => "Open Devtools (main window)",
+      TRAY_OPEN_DEVTOOLS_SETTINGS if es => "Abrir DevTools (ventana de ajustes)",
+      TRAY_OPEN_DEVTOOLS_SETTINGS => "Open Devtools (settings window)",
+      TRAY_SETTINGS if es => "Ajustes",
+      TRAY_SETTINGS => "Settings",
+      TRAY_QUIT if es => "Salir",
+      TRAY_QUIT => "Quit",
+      _ => "",
+    }
+  }
+
+  /// Every tray item that has a translated label.
+  pub const TRANSLATED_ITEMS: [&'static str; 7] = [
+    TRAY_TOGGLE_PIN,
+    TRAY_SHOW_APP,
+    TRAY_RELOAD,
+    TRAY_OPEN_DEVTOOLS_MAIN,
+    TRAY_OPEN_DEVTOOLS_SETTINGS,
+    TRAY_SETTINGS,
+    TRAY_QUIT,
+  ];
+
   pub fn create_tray_menu(app_handle: &AppHandle) -> Result<Menu<Wry>, tauri::Error> {
     let version = app_handle.package_info().version.to_string();
+    // the real language arrives from the frontend via set_language once it loads
+    let l = |id| Tray::label("en", id, false);
     MenuBuilder::new(app_handle)
-      .text(TRAY_TOGGLE_PIN, "Pin")
-      .text(TRAY_SHOW_APP, "Show Overlayed")
-      .text(TRAY_RELOAD, "Reload App")
-      .text(TRAY_OPEN_DEVTOOLS_MAIN, "Open Devtools (main window)")
-      .text(
-        TRAY_OPEN_DEVTOOLS_SETTINGS,
-        "Open Devtools (settings window)",
-      )
-      .text(TRAY_SETTINGS, "Settings")
+      .text(TRAY_TOGGLE_PIN, l(TRAY_TOGGLE_PIN))
+      .text(TRAY_SHOW_APP, l(TRAY_SHOW_APP))
+      .text(TRAY_RELOAD, l(TRAY_RELOAD))
+      .text(TRAY_OPEN_DEVTOOLS_MAIN, l(TRAY_OPEN_DEVTOOLS_MAIN))
+      .text(TRAY_OPEN_DEVTOOLS_SETTINGS, l(TRAY_OPEN_DEVTOOLS_SETTINGS))
+      .text(TRAY_SETTINGS, l(TRAY_SETTINGS))
       .separator()
       .text(OVERLAYED, format!("Overlayed v{version}"))
-      .text(TRAY_QUIT, "Quit")
+      .text(TRAY_QUIT, l(TRAY_QUIT))
       .build()
   }
 

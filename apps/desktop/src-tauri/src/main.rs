@@ -44,6 +44,17 @@ pub struct HideTaskbarWhenPinned(AtomicBool);
 
 pub struct TrayMenu(Mutex<Menu<Wry>>);
 
+/// UI language ("en" / "es"), used for the tray menu labels
+pub struct Language(Mutex<String>);
+
+impl std::ops::Deref for Language {
+  type Target = Mutex<String>;
+
+  fn deref(&self) -> &Self::Target {
+    &self.0
+  }
+}
+
 #[cfg(target_os = "macos")]
 fn apply_macos_specifics(window: &WebviewWindow) {
   use tauri::{AppHandle, Wry};
@@ -123,6 +134,7 @@ fn main() {
   app = app
     .manage(Pinned(AtomicBool::new(false)))
     .manage(HideTaskbarWhenPinned(AtomicBool::new(false)))
+    .manage(Language(Mutex::new("en".to_string())))
     .setup(move |app| {
       debug!("starting app...");
       let window = app.get_webview_window(MAIN_WINDOW_NAME).unwrap();
@@ -178,6 +190,7 @@ fn main() {
       open_settings,
       set_hide_taskbar_when_pinned,
       open_config_dir,
+      set_language,
     ]);
 
   app

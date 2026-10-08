@@ -7,6 +7,12 @@ export type DirectionTB = "top" | "bottom";
 
 export type OpacityTarget = "all" | "username-box";
 
+export type Language = "en" | "es";
+
+// first launch follows the OS language
+const DEFAULT_LANGUAGE: Language =
+  typeof navigator !== "undefined" && navigator.language?.toLowerCase().startsWith("es") ? "es" : "en";
+
 // TODO: this is hard to use we zzz
 // NOTE: how can i handle versions updates where i add new keys
 // NOTE: this looks cool https://github.com/harshkhandeparkar/tauri-settings/issues
@@ -23,6 +29,7 @@ export interface OverlayedConfig {
   maxUsernameLength: number;
   userScale: number;
   hideTaskbarWhenPinned: boolean;
+  language: Language;
 }
 
 export type OverlayedConfigKey = keyof OverlayedConfig;
@@ -41,6 +48,7 @@ export const DEFAULT_OVERLAYED_CONFIG: OverlayedConfig = {
   maxUsernameLength: 40,
   userScale: 100,
   hideTaskbarWhenPinned: false,
+  language: DEFAULT_LANGUAGE,
 };
 
 const CONFIG_FILE_NAME = "config.json";

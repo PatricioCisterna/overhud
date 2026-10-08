@@ -1,0 +1,200 @@
+import type { Language } from "@/config";
+import { useConfigValue } from "@/hooks/use-config-value";
+
+const en = {
+  // nav bar
+  "nav.left": "Left",
+  "nav.center": "Center",
+  "nav.right": "Right",
+  "nav.alignTitle": "{name}-aligned. Click to toggle.",
+  "nav.enablePin": "Enable pin",
+  "nav.dismiss": "Dismiss",
+  "nav.settings": "Settings",
+  "nav.privateCall": "Private call",
+  "nav.hintPinning": "Pinning hides this frame to only show the users in the call.",
+  "nav.hintUnpin": "Unpin or access Settings anytime via the",
+  "nav.hintSystemTray": "system tray",
+  "nav.hintNearClock": "icon near the clock in your taskbar.",
+  "nav.hintMenuBar": "menu bar",
+  "nav.hintTopRight": "icon in the top-right of your screen.",
+  "nav.hintNotificationArea": "notification area",
+  "nav.hintIcon": "icon.",
+
+  // main view
+  "main.authorize": "Authorize Discord",
+  "main.disclaimer": "Overlayed is not affiliated with Discord. Discord is a trademark of Discord Inc.",
+  "main.step1": "Discord should have opened a popup",
+  "main.step2": 'Click "Authorize" within Discord',
+  "main.step3": "Join a voice channel",
+  "main.step4": "Enjoy 🥳",
+  "main.tryAgain": "Try Again",
+  "common.quitOverlayed": "Quit Overlayed",
+  "common.cancel": "Cancel",
+
+  // error view
+  "error.title": "Error Connecting to Discord",
+  "error.restart": "Please try restarting discord then try again",
+  "error.connect": "Connect to Discord",
+
+  // settings
+  "settings.general": "General",
+  "settings.configuration": "Configuration",
+  "settings.joinHistory": "Join History",
+  "settings.canary": "The canary build may be unstable (click to learn more)",
+  "settings.foundBug": "Found a bug? Please report them on the",
+  "settings.githubRepo": "github repo",
+
+  // account
+  "account.openDevtools": "Open Devtools",
+  "account.openConfigDir": "Open Config Dir",
+  "account.pleaseLogin": "Please Login to use Overlayed",
+  "account.tokenExpires": "Token Expires",
+  "account.pin": "Pin",
+  "account.unpin": "Unpin",
+  "account.logout": "Logout",
+  "account.logoutConfirm": "Are you sure you want to log out of Overlayed?",
+  "account.confirmLogout": "Confirm Logout",
+  "account.quit": "Quit",
+  "account.quitConfirm": "Are you sure you want to quit the Overlayed app?",
+
+  // configuration
+  "config.language": "Language",
+  "config.launchOnStartup": "Launch on startup",
+  "config.onlySpeaking": "Only show users who are speaking",
+  "config.maxUsername": "Max username length",
+  "config.anchorHorizontal": "Anchor horizontal",
+  "config.anchorVertical": "Anchor vertical",
+  "config.left": "Left",
+  "config.center": "Center",
+  "config.right": "Right",
+  "config.top": "Top",
+  "config.bottom": "Bottom",
+  "config.opacityTarget": "Opacity target",
+  "config.everything": "Everything",
+  "config.usernameBackground": "Username background only",
+  "config.opacity": "Overlay opacity",
+  "config.scale": "Scale",
+  "config.hideTaskbar": "Hide taskbar when pinned",
+
+  // join history
+  "history.description": "Display join/leave events in the voice chat useful for moderation purposes",
+  "history.enableNotifications": "Enable join/leave notifications",
+  "history.clear": "Clear list",
+  "history.copiedTitle": "User Info Copied",
+  "history.copiedDescription": "{user} ({event}) copied to clipboard",
+  "history.join": "join",
+  "history.leave": "leave",
+  "history.joined": "JOINED",
+  "history.left": "LEFT",
+
+  // updater
+  "updater.updating": "Updating...",
+  "updater.available": "Update Available! Click here to update",
+  "updater.title": "Update Overlayed",
+  "updater.confirm": "Are you sure you want to update Overlayed?",
+  "updater.update": "Update",
+};
+
+export type TranslationKey = keyof typeof en;
+
+const es: Record<TranslationKey, string> = {
+  "nav.left": "Izquierda",
+  "nav.center": "Centro",
+  "nav.right": "Derecha",
+  "nav.alignTitle": "Alineado: {name}. Clic para cambiar.",
+  "nav.enablePin": "Fijar",
+  "nav.dismiss": "Cerrar",
+  "nav.settings": "Ajustes",
+  "nav.privateCall": "Llamada privada",
+  "nav.hintPinning": "Al fijarlo se oculta este marco y solo se ven los usuarios de la llamada.",
+  "nav.hintUnpin": "Para soltarlo o abrir los Ajustes, usa el icono de la",
+  "nav.hintSystemTray": "bandeja del sistema",
+  "nav.hintNearClock": "junto al reloj de la barra de tareas.",
+  "nav.hintMenuBar": "barra de menús",
+  "nav.hintTopRight": "arriba a la derecha de la pantalla.",
+  "nav.hintNotificationArea": "área de notificaciones",
+  "nav.hintIcon": ".",
+
+  "main.authorize": "Autorizar Discord",
+  "main.disclaimer": "Overlayed no está afiliado a Discord. Discord es una marca de Discord Inc.",
+  "main.step1": "Discord debería haber abierto una ventana",
+  "main.step2": 'Pulsa "Autorizar" en Discord',
+  "main.step3": "Entra a un canal de voz",
+  "main.step4": "Disfruta 🥳",
+  "main.tryAgain": "Reintentar",
+  "common.quitOverlayed": "Salir de Overlayed",
+  "common.cancel": "Cancelar",
+
+  "error.title": "Error al conectar con Discord",
+  "error.restart": "Reinicia Discord y vuelve a intentarlo",
+  "error.connect": "Conectar con Discord",
+
+  "settings.general": "General",
+  "settings.configuration": "Configuración",
+  "settings.joinHistory": "Historial",
+  "settings.canary": "La versión canary puede ser inestable (clic para saber más)",
+  "settings.foundBug": "¿Encontraste un fallo? Repórtalo en el",
+  "settings.githubRepo": "repo de GitHub",
+
+  "account.openDevtools": "Abrir DevTools",
+  "account.openConfigDir": "Abrir carpeta de config",
+  "account.pleaseLogin": "Inicia sesión para usar Overlayed",
+  "account.tokenExpires": "La sesión caduca",
+  "account.pin": "Fijar",
+  "account.unpin": "Soltar",
+  "account.logout": "Salir",
+  "account.logoutConfirm": "¿Seguro que quieres cerrar sesión en Overlayed?",
+  "account.confirmLogout": "Cerrar sesión",
+  "account.quit": "Cerrar",
+  "account.quitConfirm": "¿Seguro que quieres cerrar Overlayed?",
+
+  "config.language": "Idioma",
+  "config.launchOnStartup": "Abrir al iniciar Windows",
+  "config.onlySpeaking": "Mostrar solo a quien está hablando",
+  "config.maxUsername": "Largo máximo del nombre",
+  "config.anchorHorizontal": "Anclaje horizontal",
+  "config.anchorVertical": "Anclaje vertical",
+  "config.left": "Izquierda",
+  "config.center": "Centro",
+  "config.right": "Derecha",
+  "config.top": "Arriba",
+  "config.bottom": "Abajo",
+  "config.opacityTarget": "Aplicar opacidad a",
+  "config.everything": "Todo",
+  "config.usernameBackground": "Solo el fondo del nombre",
+  "config.opacity": "Opacidad",
+  "config.scale": "Tamaño",
+  "config.hideTaskbar": "Ocultar de la barra de tareas al fijar",
+
+  "history.description": "Muestra quién entra y sale del canal de voz, útil para moderar",
+  "history.enableNotifications": "Avisar cuando alguien entra o sale",
+  "history.clear": "Vaciar lista",
+  "history.copiedTitle": "Usuario copiado",
+  "history.copiedDescription": "{user} ({event}) copiado al portapapeles",
+  "history.join": "entró",
+  "history.leave": "salió",
+  "history.joined": "ENTRÓ",
+  "history.left": "SALIÓ",
+
+  "updater.updating": "Actualizando...",
+  "updater.available": "¡Hay una actualización! Clic aquí para actualizar",
+  "updater.title": "Actualizar Overlayed",
+  "updater.confirm": "¿Seguro que quieres actualizar Overlayed?",
+  "updater.update": "Actualizar",
+};
+
+const translations: Record<Language, Record<TranslationKey, string>> = { en, es };
+
+export const translate = (language: Language, key: TranslationKey, vars?: Record<string, string>) => {
+  let text = translations[language]?.[key] ?? en[key];
+  for (const [name, value] of Object.entries(vars ?? {})) {
+    text = text.replace(`{${name}}`, value);
+  }
+  return text;
+};
+
+export const useTranslation = () => {
+  const { value: language } = useConfigValue("language");
+  const t = (key: TranslationKey, vars?: Record<string, string>) => translate(language, key, vars);
+  return { t, language };
+};

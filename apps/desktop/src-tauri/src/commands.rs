@@ -5,7 +5,30 @@ use std::{
 
 use tauri::{image::Image, menu::Menu, AppHandle, Emitter, Manager, State, WebviewWindow, Wry};
 
-use crate::{constants::*, HideTaskbarWhenPinned, Pinned, TrayMenu};
+use crate::{constants::*, tray::Tray, HideTaskbarWhenPinned, Language, Pinned, TrayMenu};
+
+#[tauri::command]
+pub fn set_language(
+  language: String,
+  stored: State<Language>,
+  pinned: State<Pinned>,
+  menu: State<TrayMenu>,
+) {
+  if let Ok(mut l) = stored.lock() {
+    *l = language.clone();
+  }
+
+  let pinned = pinned.load(std::sync::atomic::Ordering::Relaxed);
+  if let Ok(menu) = menu.lock() {
+    for id in Tray::TRANSLATED_ITEMS {
+      if let Some(item) = menu.get(id) {
+        item
+          .as_menuitem_unchecked()
+          .set_text(Tray::label(&language, id, pinned));
+      }
+    }
+  }
+}
 
 #[tauri::command]
 pub fn open_settings(window: WebviewWindow, update: bool) {
@@ -166,10 +189,11 @@ fn _set_pin(
 
   // invert the label for the tray
   if let Some(toggle_pin_menu_item) = menu.lock().ok().and_then(|m| m.get(TRAY_TOGGLE_PIN)) {
-    let enable_or_disable = if value { "Unpin" } else { "Pin" };
+    let language = window.app_handle().state::<Language>();
+    let language = language.lock().map(|l| l.clone()).unwrap_or_default();
     toggle_pin_menu_item
       .as_menuitem_unchecked()
-      .set_text(enable_or_disable);
+      .set_text(Tray::label(&language, TRAY_TOGGLE_PIN, value));
   }
 
   #[cfg(target_os = "macos")]

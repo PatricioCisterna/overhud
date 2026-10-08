@@ -15,10 +15,12 @@ import {
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { listen } from "@tauri-apps/api/event";
+import { useTranslation } from "@/i18n";
 
 export const Updater = ({ update }: { update: Update }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     (async () => {
@@ -32,7 +34,7 @@ export const Updater = ({ update }: { update: Update }) => {
     return (
       <div className="py-2 h-[48px] bg-green-600">
         <div className="text-white! text-xl font-bold cursor-pointer flex gap-2 items-center justify-center">
-          <p>Updating...</p>
+          <p>{t("updater.updating")}</p>
         </div>
       </div>
     );
@@ -45,7 +47,7 @@ export const Updater = ({ update }: { update: Update }) => {
           <button className="w-full">
             <div className="text-white font-bold cursor-pointer flex gap-2 items-center justify-center">
               <Download />
-              <p>Update Available! Click here to update</p>
+              <p>{t("updater.available")}</p>
             </div>
           </button>
         </DialogTrigger>
@@ -66,16 +68,16 @@ export const Updater = ({ update }: { update: Update }) => {
             }}
           >
             <DialogHeader>
-              <DialogTitle className="text-xl mb-4 text-white">Update Overlayed</DialogTitle>
+              <DialogTitle className="text-xl mb-4 text-white">{t("updater.title")}</DialogTitle>
               <DialogDescription className="text-xl mb-4 text-white">
-                Are you sure you want to update Overlayed?
+                {t("updater.confirm")}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="secondary">Cancel</Button>
+                <Button variant="secondary">{t("common.cancel")}</Button>
               </DialogClose>
-              <Button type="submit">Update</Button>
+              <Button type="submit">{t("updater.update")}</Button>
             </DialogFooter>
           </form>
         </DialogContent>

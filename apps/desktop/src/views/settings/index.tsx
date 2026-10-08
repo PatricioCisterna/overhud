@@ -7,6 +7,7 @@ import { usePlatformInfo } from "@/hooks/use-platform-info";
 import { SiX, SiTwitch, SiDiscord, type IconType } from "@icons-pack/react-simple-icons";
 import type { Update } from "@tauri-apps/plugin-updater";
 import { Configuration } from "./configuration";
+import { useTranslation } from "@/i18n";
 
 function Link({ icon: Icon, url }: { icon: IconType; url: string }) {
   return (
@@ -19,6 +20,7 @@ function Link({ icon: Icon, url }: { icon: IconType; url: string }) {
 export const SettingsView = ({ update }: { update: Update | null }) => {
   const { canary } = usePlatformInfo();
   const [currentTab, setCurrentTab] = useState("account");
+  const { t } = useTranslation();
   return (
     <div className="bg-zinc-900 w-[calc(100vw)] h-full">
       <Tabs
@@ -28,14 +30,14 @@ export const SettingsView = ({ update }: { update: Update | null }) => {
         }}
       >
         <TabsList className="grid w-full grid-cols-3 rounded-t-none">
-          <TabsTrigger value="account">General</TabsTrigger>
-          <TabsTrigger value="configuration">Configuration</TabsTrigger>
-          <TabsTrigger value="join-history">Join History</TabsTrigger>
+          <TabsTrigger value="account">{t("settings.general")}</TabsTrigger>
+          <TabsTrigger value="configuration">{t("settings.configuration")}</TabsTrigger>
+          <TabsTrigger value="join-history">{t("settings.joinHistory")}</TabsTrigger>
         </TabsList>
         {canary && (
           <div className="h-[32px] bg-yellow-400 font-semibold text-black flex items-center justify-center">
             <a target="_blank" href="https://overlayed.dev/canary#about">
-              <p>The canary build may be unstable (click to learn more)</p>
+              <p>{t("settings.canary")}</p>
             </a>
           </div>
         )}
@@ -55,14 +57,14 @@ export const SettingsView = ({ update }: { update: Update | null }) => {
         </div>
         <div className="absolute bottom-0 flex items-center w-full h-10 pl-4 text-gray-400 bg-zinc-800">
           <p>
-            Found a bug? Please report them on the{" "}
+            {t("settings.foundBug")}{" "}
             <a
               className="text-blue-400"
               target="_blank"
               rel="noreferrer"
               href="https://github.com/overlayeddev/overlayed"
             >
-              github repo
+              {t("settings.githubRepo")}
             </a>
           </p>
           <div className="flex grow pr-4 justify-end gap-3 ">

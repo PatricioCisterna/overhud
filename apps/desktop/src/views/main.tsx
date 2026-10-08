@@ -2,9 +2,11 @@ import { useAppStore } from "../store";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { exit } from "@tauri-apps/plugin-process";
+import { useTranslation } from "@/i18n";
 
 export const MainView = () => {
   const { resetErrors } = useAppStore();
+  const { t } = useTranslation();
 
   useEffect(() => {
     resetErrors();
@@ -13,22 +15,20 @@ export const MainView = () => {
   return (
     <div className="h-screen p-2 bg-zinc-900">
       <div className="pt-1 mb-3 font-bold text-2xl text-center">
-        <p className="mb-2">Authorize Discord</p>
-        <p className="text-sm text-center text-zinc-400">
-          Overlayed is not affiliated with Discord. Discord is a trademark of Discord Inc.
-        </p>
+        <p className="mb-2">{t("main.authorize")}</p>
+        <p className="text-sm text-center text-zinc-400">{t("main.disclaimer")}</p>
         <ul className="flex flex-col pl-10 gap-4 p-4 mt-6 text-xl text-left">
           <li>
-            <p className="leading-8">Discord should have opened a popup</p>
+            <p className="leading-8">{t("main.step1")}</p>
           </li>
           <li>
-            <p className="leading-8">Click &quot;Authorize&quot; within Discord</p>
+            <p className="leading-8">{t("main.step2")}</p>
           </li>
           <li>
-            <p className="leading-8">Join a voice channel</p>
+            <p className="leading-8">{t("main.step3")}</p>
           </li>
           <li>
-            <p className="leading-8">Enjoy 🥳</p>
+            <p className="leading-8">{t("main.step4")}</p>
           </li>
         </ul>
 
@@ -39,7 +39,7 @@ export const MainView = () => {
               window.location.reload();
             }}
           >
-            Try Again
+            {t("main.tryAgain")}
           </Button>
 
           <Button
@@ -48,7 +48,7 @@ export const MainView = () => {
               await exit();
             }}
           >
-            Quit Overlayed
+            {t("common.quitOverlayed")}
           </Button>
         </div>
       </div>

@@ -1,13 +1,15 @@
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import Config from "@/config";
+import Config, { type Language } from "@/config";
 import { useConfigValue } from "@/hooks/use-config-value";
+import { useTranslation } from "@/i18n";
 import { emit } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/core";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import { useEffect, useState } from "react";
 
 export const Configuration = () => {
+  const { t, language } = useTranslation();
   const [launchOnStartup, setLaunchOnStartup] = useState(false);
 
   useEffect(() => {
@@ -24,13 +26,41 @@ export const Configuration = () => {
   const { value: hideTaskbarWhenPinned } = useConfigValue("hideTaskbarWhenPinned");
 
   return (
-    <div className="flex flex-col gap-2">
+    // the settings window has a fixed height, so the list scrolls instead of being cut off
+    <div className="flex flex-col gap-2 max-h-[372px] overflow-auto nice-scroll pr-1">
       <div className="flex items-center justify-between mt-2 h-8 mx-2">
+        <label
+          htmlFor="language"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {t("config.language")}
+        </label>
+        <select
+          id="language"
+          value={language}
+          onChange={async event => {
+            const newLanguage = event.target.value as Language;
+            await Config.set("language", newLanguage);
+            await invoke("set_language", { language: newLanguage });
+
+            await emit("config_update", await Config.getConfig());
+          }}
+          className="w-40 p-1 rounded border bg-zinc-800 text-white outline-none focus:ring-0 cursor-pointer"
+        >
+          <option value="es" className="bg-zinc-800 text-white">
+            Español
+          </option>
+          <option value="en" className="bg-zinc-800 text-white">
+            English
+          </option>
+        </select>
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
         <label
           htmlFor="launchOnStartup"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Launch on startup
+          {t("config.launchOnStartup")}
         </label>
         <Switch
           id="launchOnStartup"
@@ -51,7 +81,7 @@ export const Configuration = () => {
           htmlFor="notification"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Only show users who are speaking
+          {t("config.onlySpeaking")}
         </label>
         <Switch
           id="notification"
@@ -69,7 +99,7 @@ export const Configuration = () => {
           htmlFor="maxUsernameLength"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Max username length
+          {t("config.maxUsername")}
         </label>
         <div className="flex items-center gap-4 w-1/2">
           <div className="flex-1">
@@ -95,7 +125,7 @@ export const Configuration = () => {
           htmlFor="horizontal"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Anchor horizontal
+          {t("config.anchorHorizontal")}
         </label>
         <select
           id="horizontal"
@@ -109,13 +139,13 @@ export const Configuration = () => {
           className="w-40 p-1 rounded border bg-zinc-800 text-white outline-none focus:ring-0 cursor-pointer"
         >
           <option value="left" className="bg-zinc-800 text-white">
-            Left
+            {t("config.left")}
           </option>
           <option value="center" className="bg-zinc-800 text-white">
-            Center
+            {t("config.center")}
           </option>
           <option value="right" className="bg-zinc-800 text-white">
-            Right
+            {t("config.right")}
           </option>
         </select>
       </div>
@@ -124,7 +154,7 @@ export const Configuration = () => {
           htmlFor="vertical"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Anchor vertical
+          {t("config.anchorVertical")}
         </label>
         <select
           id="vertical"
@@ -138,10 +168,10 @@ export const Configuration = () => {
           className="w-40 p-1 rounded border bg-zinc-800 text-white outline-none focus:ring-0 cursor-pointer"
         >
           <option value="top" className="bg-zinc-800 text-white">
-            Top
+            {t("config.top")}
           </option>
           <option value="bottom" className="bg-zinc-800 text-white">
-            Bottom
+            {t("config.bottom")}
           </option>
         </select>
       </div>
@@ -150,7 +180,7 @@ export const Configuration = () => {
           htmlFor="opacityTarget"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Opacity target
+          {t("config.opacityTarget")}
         </label>
         <select
           id="opacityTarget"
@@ -164,10 +194,10 @@ export const Configuration = () => {
           className="p-1 rounded border bg-zinc-800 text-white outline-none focus:ring-0 cursor-pointer"
         >
           <option value="all" className="bg-zinc-800 text-white">
-            Everything
+            {t("config.everything")}
           </option>
           <option value="username-box" className="bg-zinc-800 text-white">
-            Username background only
+            {t("config.usernameBackground")}
           </option>
         </select>
       </div>
@@ -176,7 +206,7 @@ export const Configuration = () => {
           htmlFor="opacity"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Overlay opacity
+          {t("config.opacity")}
         </label>
         <div className="flex items-center gap-4 w-1/2">
           <div className="flex-1">
@@ -202,7 +232,7 @@ export const Configuration = () => {
           htmlFor="userScale"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Scale
+          {t("config.scale")}
         </label>
         <div className="flex items-center gap-4 w-1/2">
           <div className="flex-1">
@@ -228,7 +258,7 @@ export const Configuration = () => {
           htmlFor="hideTaskbar"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
-          Hide taskbar when pinned
+          {t("config.hideTaskbar")}
         </label>
         <Switch
           id="hideTaskbar"

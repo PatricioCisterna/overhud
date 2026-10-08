@@ -13,6 +13,7 @@ import Config from "@/config";
 import type { JoinHistoryLogUser } from "@/types";
 import { useConfigValue } from "@/hooks/use-config-value";
 import { emit } from "@tauri-apps/api/event";
+import { useTranslation } from "@/i18n";
 
 const MAX_LOG_LENGTH = 420;
 
@@ -21,6 +22,10 @@ export const JoinHistory = () => {
   const { value: joinHistoryNotifications } = useConfigValue("joinHistoryNotifications");
 
   const { toast } = useToast();
+  const { t } = useTranslation();
+  // the event listener below is registered once, so it reads the language through a ref
+  const tRef = useRef(t);
+  tRef.current = t;
   const notificationListener = useRef<Promise<UnlistenFn> | null>(null);
   // NOTE: this might be considered a react ware crime
   const notificationsEnabledRef = useRef(false);
@@ -40,10 +45,10 @@ export const JoinHistory = () => {
       const payload = event.payload as JoinHistoryLogUser;
       const { event: eventType, username } = payload;
       if (notificationsEnabledRef.current) {
-        const joinLeave = eventType === "leave" ? "left" : "joined";
+        const joinLeave = eventType === "leave" ? tRef.current("history.left") : tRef.current("history.joined");
         // TODO: clicking this would be nice to pop open the join history tab
         // BLOCKED: by https://github.com/tauri-apps/tauri/issues/3698
-        sendNotification({ title: "Join History", body: `${joinLeave.toUpperCase()} ${username}` });
+        sendNotification({ title: tRef.current("settings.joinHistory"), body: `${joinLeave} ${username}` });
       }
 
       setUserLog((prev: JoinHistoryLogUser[]) => {
@@ -69,7 +74,7 @@ export const JoinHistory = () => {
   return (
     <div className="flex flex-col pb-4">
       <p className="text-sm text-gray-400 mb-2">
-        Display join/leave events in the voice chat useful for moderation purposes
+        {t("history.description")}
       </p>
       <div className="flex items-center gap-4 pb-2">
         <div className="flex items-center">
@@ -85,12 +90,12 @@ export const JoinHistory = () => {
             htmlFor="notification"
             className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Enable join/leave notifications
+            {t("history.enableNotifications")}
           </label>
         </div>
         <div className="grow"></div>
         <Button size="sm" onClick={resetUserLog} variant="ghost" className="hover:bg-red-500">
-          <span className="mr-2">Clear list</span>
+          <span className="mr-2">{t("history.clear")}</span>
           <Trash size={18} />
         </Button>
       </div>
@@ -99,6 +104,7 @@ export const JoinHistory = () => {
           const timeInSeconds = Math.floor(item.timestamp / 1000);
           const userInfoString = `${item.username} (${item.event}) <@${item.id}> <t:${timeInSeconds}:R>`;
           const Icon = item.event === "join" ? PhoneIncoming : PhoneOff;
+          const eventLabel = item.event === "join" ? t("history.join") : t("history.leave");
           const className = item.event === "join" ? "text-green-500" : "text-red-500";
           return (
             <Tooltip key={`user-${i}-${item.id}`} disableHoverableContent delayDuration={100}>
@@ -109,9 +115,9 @@ export const JoinHistory = () => {
                     onClick={() => {
                       navigator.clipboard.writeText(userInfoString);
                       toast({
-                        title: "User Info Copied",
+                        title: t("history.copiedTitle"),
                         variant: "success",
-                        description: `${item.username} (${item.event}) copied to clipboard`,
+                        description: t("history.copiedDescription", { user: item.username, event: eventLabel }),
                         duration: 3000,
                       });
                     }}
@@ -121,7 +127,7 @@ export const JoinHistory = () => {
                 </div>
               </TooltipTrigger>
               <TooltipContent align="start">
-                {item.username} ({item.event})
+                {item.username} ({eventLabel})
               </TooltipContent>
             </Tooltip>
           );

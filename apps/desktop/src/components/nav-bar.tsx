@@ -18,6 +18,7 @@ import { CHANNEL_TYPES, FTUE_PIN_TRAY_TIP_KEY } from "@/constants";
 import { Metric, track } from "@/metrics";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
+import { useTranslation, type TranslationKey } from "@/i18n";
 
 const mapping = {
   left: 0,
@@ -27,24 +28,24 @@ const mapping = {
 
 interface Alignment {
   direction: DirectionLR;
-  name: string;
+  name: TranslationKey;
   icon: LucideIcon;
 }
 
 const horizontalAlignments: Alignment[] = [
   {
     direction: "left",
-    name: "Left",
+    name: "nav.left",
     icon: ArrowLeftToLine,
   },
   {
     direction: "center",
-    name: "Center",
+    name: "nav.center",
     icon: ChevronsRightLeft,
   },
   {
     direction: "right",
-    name: "Right",
+    name: "nav.right",
     icon: ArrowRightToLine,
   },
 ];
@@ -63,6 +64,7 @@ export const NavBar = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { currentChannel, me } = useAppStore();
+  const { t } = useTranslation();
 
   const [channelName, setChannelName] = useState<string>();
   const [currentAlignment, setCurrentAlignment] = useState(mapping[alignDirection]);
@@ -101,42 +103,43 @@ export const NavBar = ({
 
   useEffect(() => {
     if (!!currentChannel && ([CHANNEL_TYPES.DM, CHANNEL_TYPES.GROUP_DM] as number[]).includes(currentChannel.type)) {
-      setChannelName("Private call");
+      setChannelName(t("nav.privateCall"));
     } else {
       setChannelName(currentChannel?.name);
     }
-  }, [location.pathname, currentChannel]);
+  }, [location.pathname, currentChannel, t("nav.privateCall")]);
 
   function getTrayHint(os: string): React.ReactNode {
     if (os === "windows") {
       return (
         <>
-          Pinning hides this frame to only show the users in the call.
+          {t("nav.hintPinning")}
           <br />
           <br />
-          Unpin or access Settings anytime via the <strong className="text-white">system tray</strong> icon in the near
-          the clock in your taskbar.
+          {t("nav.hintUnpin")} <strong className="text-white">{t("nav.hintSystemTray")}</strong>{" "}
+          {t("nav.hintNearClock")}
         </>
       );
     }
     if (os === "macos") {
       return (
         <>
-          Pinning hides this frame to only show the users in the call.
+          {t("nav.hintPinning")}
           <br />
           <br />
-          Unpin or access Settings anytime via the <strong className="text-white">menu bar</strong> icon in the
-          top-right of your screen.
+          {t("nav.hintUnpin")} <strong className="text-white">{t("nav.hintMenuBar")}</strong>{" "}
+          {t("nav.hintTopRight")}
         </>
       );
     }
     return (
       <>
-        Pinning hides this frame to only show the users in the call.
+        {t("nav.hintPinning")}
         <br />
         <br />
-        Unpin or access Settings anytime via the <strong className="text-white">system tray</strong> /{" "}
-        <strong className="text-white">notification area</strong> icon.
+        {t("nav.hintUnpin")} <strong className="text-white">{t("nav.hintSystemTray")}</strong> /{" "}
+        <strong className="text-white">{t("nav.hintNotificationArea")}</strong>
+        {t("nav.hintIcon")}
       </>
     );
   }
@@ -179,7 +182,7 @@ export const NavBar = ({
             )}
             <button
               className="cursor-pointer"
-              title={horizontalAlignments[currentAlignment]?.name + "-aligned. Click to toggle."}
+              title={t("nav.alignTitle", { name: t(horizontalAlignments[currentAlignment]?.name ?? "nav.center") })}
             >
               <IconComponent
                 size={20}
@@ -194,7 +197,7 @@ export const NavBar = ({
               />
             </button>
             <div className="relative flex items-center">
-              <button className="cursor-pointer" title="Enable pin">
+              <button className="cursor-pointer" title={t("nav.enablePin")}>
                 <Pin
                   size={20}
                   onClick={async () => {
@@ -215,7 +218,7 @@ export const NavBar = ({
                     <button
                       onClick={dismissFtue}
                       className="absolute right-2 top-2 shrink-0 cursor-pointer text-zinc-400 hover:text-white"
-                      title="Dismiss"
+                      title={t("nav.dismiss")}
                     >
                       <X size={16} />
                     </button>
@@ -225,7 +228,7 @@ export const NavBar = ({
             </div>
             <button
               className="cursor-pointer"
-              title="Settings"
+              title={t("nav.settings")}
               onClick={() => {
                 invoke("open_settings", { update: false });
               }}

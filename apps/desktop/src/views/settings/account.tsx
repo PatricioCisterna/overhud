@@ -22,6 +22,8 @@ import { usePin } from "@/hooks/use-pin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Pin } from "lucide-react";
 import type { VoiceUser } from "@/types";
+import { useTranslation } from "@/i18n";
+import { es as esLocale } from "date-fns/locale";
 
 export const Developer = () => {
   const DEV_TOKEN_BACKUP_KEY = "overlayed:dev:token-backup";
@@ -51,6 +53,8 @@ export const Developer = () => {
     // Bring focus back to the main window where the auth screen is shown.
     await invoke("close_settings");
   };
+
+  const { t } = useTranslation();
 
   const restoreTokenAfterTesting = () => {
     const tokenBackup = localStorage.getItem(DEV_TOKEN_BACKUP_KEY);
@@ -83,7 +87,7 @@ export const Developer = () => {
               await invoke("open_overlay_devtools");
             }}
           >
-            Open Devtools
+            {t("account.openDevtools")}
           </Button>
           <Button
             size="sm"
@@ -92,7 +96,7 @@ export const Developer = () => {
               await invoke("open_config_dir");
             }}
           >
-            Open Config Dir
+            {t("account.openConfigDir")}
           </Button>
         </div>
         {import.meta.env.DEV && (
@@ -184,6 +188,7 @@ export const Account = () => {
   const [user, setUser] = useState<VoiceUser | null>(null);
   const [tokenExpires, setTokenExpires] = useState(localStorage.getItem("discord_access_token_expiry"));
   const { pin: pinned } = usePin();
+  const { t, language } = useTranslation();
 
   // pull out the user data from localStorage
   useEffect(() => {
@@ -230,13 +235,13 @@ export const Account = () => {
                 </p>
               </div>
             ) : (
-              <p>Please Login to use Overlayed</p>
+              <p>{t("account.pleaseLogin")}</p>
             )}
 
             <div className="pb-4">
               {tokenExpires && (
                 <p className="text-sm">
-                  <strong>Token Expires</strong> {dateFns.formatDistanceToNow(new Date(tokenExpires))}
+                  <strong>{t("account.tokenExpires")}</strong>{" "}{dateFns.formatDistanceToNow(new Date(tokenExpires), { locale: language === "es" ? esLocale : undefined })}
                 </p>
               )}
             </div>
@@ -257,7 +262,7 @@ export const Account = () => {
               }}
             >
               <Pin className={pinned ? "mr-2 h-4 w-4 text-yellow-400" : "mr-2 h-4 w-4"} size={16} />
-              {pinned ? "Unpin" : "Pin"}
+              {pinned ? t("account.unpin") : t("account.pin")}
             </Button>
           </div>
           <div>
@@ -269,7 +274,7 @@ export const Account = () => {
             >
               <DialogTrigger asChild>
                 <Button size="sm" disabled={!user?.id} className="w-20">
-                  Logout
+                  {t("account.logout")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="w-[80%]">
@@ -286,16 +291,16 @@ export const Account = () => {
                   }}
                 >
                   <DialogHeader>
-                    <DialogTitle className="mb-4 text-xl text-white">Logout</DialogTitle>
+                    <DialogTitle className="mb-4 text-xl text-white">{t("account.logout")}</DialogTitle>
                     <DialogDescription className="mb-4 text-xl text-white">
-                      Are you sure you want to log out of Overlayed?
+                      {t("account.logoutConfirm")}
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button variant="secondary">Cancel</Button>
+                      <Button variant="secondary">{t("common.cancel")}</Button>
                     </DialogClose>
-                    <Button type="submit">Confirm Logout</Button>
+                    <Button type="submit">{t("account.confirmLogout")}</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
@@ -310,7 +315,7 @@ export const Account = () => {
           >
             <DialogTrigger asChild>
               <Button size="sm" className="w-20">
-                Quit
+                {t("account.quit")}
               </Button>
             </DialogTrigger>
             <DialogContent className="w-[80%]">
@@ -322,17 +327,17 @@ export const Account = () => {
                 }}
               >
                 <DialogHeader>
-                  <DialogTitle className="mb-4 text-xl text-white">Quit Overlayed</DialogTitle>
+                  <DialogTitle className="mb-4 text-xl text-white">{t("common.quitOverlayed")}</DialogTitle>
                   <DialogDescription className="mb-4 text-xl text-white">
-                    Are you sure you want to quit the Overlayed app?
+                    {t("account.quitConfirm")}
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button variant="secondary">Cancel</Button>
+                    <Button variant="secondary">{t("common.cancel")}</Button>
                   </DialogClose>
                   <Button variant="destructive" type="submit">
-                    Quit
+                    {t("account.quit")}
                   </Button>
                 </DialogFooter>
               </form>

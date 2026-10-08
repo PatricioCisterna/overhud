@@ -17,33 +17,6 @@ import type { VoiceUser } from "@/types";
 import { getVersion } from "@tauri-apps/api/app";
 import { hash } from "@/utils/crypto";
 import { invoke } from "@tauri-apps/api/core";
-import { writeTextFile } from "@tauri-apps/plugin-fs";
-import { BaseDirectory } from "@tauri-apps/api/path";
-
-// TEMP: diagnostic for the streaming indicator. Only field names and voice_state
-// values are written, no usernames.
-const voiceStateDebug = { dataKeys: new Set<string>(), voiceStateKeys: new Set<string>(), samples: [] as unknown[] };
-const recordVoiceStateFields = (raw: unknown) => {
-  if (!raw || typeof raw !== "object") return;
-  const data = raw as Record<string, unknown>;
-  Object.keys(data).forEach(k => voiceStateDebug.dataKeys.add(k));
-  const voiceState = (data.voice_state ?? {}) as Record<string, unknown>;
-  Object.keys(voiceState).forEach(k => voiceStateDebug.voiceStateKeys.add(k));
-  voiceStateDebug.samples = [{ at: new Date().toISOString(), voice_state: voiceState }, ...voiceStateDebug.samples].slice(0, 40);
-  writeTextFile(
-    "voice-state-debug.json",
-    JSON.stringify(
-      {
-        dataKeys: [...voiceStateDebug.dataKeys],
-        voiceStateKeys: [...voiceStateDebug.voiceStateKeys],
-        samples: voiceStateDebug.samples,
-      },
-      null,
-      2
-    ),
-    { baseDir: BaseDirectory.AppConfig }
-  ).catch(() => {});
-};
 
 interface TokenResponse {
   access_token: string;
@@ -303,14 +276,6 @@ class SocketManager {
 
     if (payload.evt === RPCEvent.VOICE_STATE_UPDATE) {
       this.store.updateUser(payload.data);
-    }
-
-    // TEMP: record which voice state fields discord actually sends (looking for streaming)
-    if (payload.evt === RPCEvent.VOICE_STATE_CREATE || payload.evt === RPCEvent.VOICE_STATE_UPDATE) {
-      recordVoiceStateFields(payload.data);
-    }
-    if (payload.cmd === RPCCommand.GET_SELECTED_VOICE_CHANNEL && payload.data?.voice_states) {
-      for (const item of payload.data.voice_states) recordVoiceStateFields(item);
     }
 
     if (payload.cmd === RPCCommand.GET_SOUNDBOARD_SOUNDS) {

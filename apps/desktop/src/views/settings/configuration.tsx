@@ -4,8 +4,16 @@ import Config from "@/config";
 import { useConfigValue } from "@/hooks/use-config-value";
 import { emit } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/core";
+import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
+import { useEffect, useState } from "react";
 
 export const Configuration = () => {
+  const [launchOnStartup, setLaunchOnStartup] = useState(false);
+
+  useEffect(() => {
+    isEnabled().then(setLaunchOnStartup);
+  }, []);
+
   const { value: showOnlyTalkingUsers } = useConfigValue("showOnlyTalkingUsers");
   const { value: opacity } = useConfigValue("opacity");
   const { value: opacityTarget } = useConfigValue("opacityTarget");
@@ -18,6 +26,27 @@ export const Configuration = () => {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between mt-2 h-8 mx-2">
+        <label
+          htmlFor="launchOnStartup"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Launch on startup
+        </label>
+        <Switch
+          id="launchOnStartup"
+          checked={launchOnStartup}
+          onCheckedChange={async () => {
+            if (launchOnStartup) {
+              await disable();
+            } else {
+              await enable();
+            }
+
+            setLaunchOnStartup(await isEnabled());
+          }}
+        />
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
         <label
           htmlFor="notification"
           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

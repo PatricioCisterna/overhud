@@ -37,6 +37,7 @@
     "shell:default",
     "websocket:default",
     "window-state:default",
+    "autostart:default",
     {
       "identifier": "http:default",
       "allow": [

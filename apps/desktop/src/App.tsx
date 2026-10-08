@@ -16,6 +16,7 @@ import { useSocket } from "./rpc/manager";
 import { cn } from "./utils/tw";
 import Config from "./config";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 function App() {
   useDisableWebFeatures();
@@ -32,6 +33,12 @@ function App() {
       await invoke("set_hide_taskbar_when_pinned", {
         hideTaskbarWhenPinned: config.hideTaskbarWhenPinned,
       });
+
+      // restore the pin from the last session; only the overlay window does it
+      // so the settings window doesn't apply it twice
+      if (getCurrentWindow().label === "main" && config.pin) {
+        await invoke("set_pin", { value: true });
+      }
     })();
   }, []);
 

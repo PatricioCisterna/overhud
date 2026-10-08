@@ -136,6 +136,7 @@ fn main() {
     .manage(HideTaskbarWhenPinned(AtomicBool::new(false)))
     .manage(Language(Mutex::new("en".to_string())))
     .manage(InteractiveRegion(Mutex::new(None)))
+    .manage(HideInFullscreen(AtomicBool::new(false)))
     .setup(move |app| {
       debug!("starting app...");
       let window = app.get_webview_window(MAIN_WINDOW_NAME).unwrap();
@@ -175,6 +176,9 @@ fn main() {
       // let the soundboard button take clicks even while pinned
       watch_interactive_region(app.app_handle().clone());
 
+      // hide the overlay while a game is fullscreen (when enabled in settings)
+      watch_fullscreen(app.app_handle().clone());
+
       // NOTE: always force settings window to be a certain size
       settings.set_size(LogicalSize {
         width: SETTINGS_WINDOW_WIDTH,
@@ -200,6 +204,7 @@ fn main() {
       open_soundboard,
       close_soundboard,
       focus_discord,
+      set_hide_in_fullscreen,
     ]);
 
   app

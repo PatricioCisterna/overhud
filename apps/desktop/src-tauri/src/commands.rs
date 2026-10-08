@@ -143,6 +143,100 @@ pub fn open_soundboard(app: AppHandle, x: f64, y: f64, width: f64, height: f64) 
   let _ = popup.emit(SOUNDBOARD_OPENED, ());
 }
 
+/// Whether the overlay should hide itself while a fullscreen app (a game) is in front.
+pub struct HideInFullscreen(pub AtomicBool);
+
+#[tauri::command]
+pub fn set_hide_in_fullscreen(state: State<HideInFullscreen>, value: bool) {
+  state.0.store(value, std::sync::atomic::Ordering::Relaxed);
+}
+
+/// True when the focused window covers its whole monitor and isn't ours or the desktop.
+#[cfg(target_os = "windows")]
+fn fullscreen_app_in_front() -> bool {
+  use windows_sys::Win32::Foundation::RECT;
+  use windows_sys::Win32::Graphics::Gdi::{
+    GetMonitorInfoW, MonitorFromWindow, MONITORINFO, MONITOR_DEFAULTTONEAREST,
+  };
+  use windows_sys::Win32::System::Threading::GetCurrentProcessId;
+  use windows_sys::Win32::UI::WindowsAndMessaging::{
+    GetClassNameW, GetForegroundWindow, GetWindowRect, GetWindowThreadProcessId,
+  };
+
+  unsafe {
+    let hwnd = GetForegroundWindow();
+    if hwnd.is_null() {
+      return false;
+    }
+
+    let mut pid = 0u32;
+    GetWindowThreadProcessId(hwnd, &mut pid);
+    if pid == GetCurrentProcessId() {
+      return false;
+    }
+
+    // the desktop also "covers the screen"
+    let mut class = [0u16; 64];
+    let len = GetClassNameW(hwnd, class.as_mut_ptr(), class.len() as i32);
+    let class = String::from_utf16_lossy(&class[..len.max(0) as usize]);
+    if class == "Progman" || class == "WorkerW" || class == "Shell_TrayWnd" {
+      return false;
+    }
+
+    let mut rect: RECT = std::mem::zeroed();
+    if GetWindowRect(hwnd, &mut rect) == 0 {
+      return false;
+    }
+    let mut info: MONITORINFO = std::mem::zeroed();
+    info.cbSize = std::mem::size_of::<MONITORINFO>() as u32;
+    if GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mut info) == 0 {
+      return false;
+    }
+    let m = info.rcMonitor;
+    rect.left <= m.left && rect.top <= m.top && rect.right >= m.right && rect.bottom >= m.bottom
+  }
+}
+
+/// Hide the overlay while a game is fullscreen and bring it back afterwards,
+/// without stealing focus from the game.
+pub fn watch_fullscreen(app: AppHandle) {
+  #[cfg(target_os = "windows")]
+  std::thread::spawn(move || {
+    use windows_sys::Win32::UI::WindowsAndMessaging::{ShowWindow, SW_HIDE, SW_SHOWNOACTIVATE};
+
+    let mut hidden_by_us = false;
+    loop {
+      std::thread::sleep(std::time::Duration::from_millis(500));
+
+      let enabled = app
+        .state::<HideInFullscreen>()
+        .0
+        .load(std::sync::atomic::Ordering::Relaxed);
+      let should_hide = enabled && fullscreen_app_in_front();
+      if should_hide == hidden_by_us {
+        continue;
+      }
+
+      let Some(window) = app.get_webview_window(MAIN_WINDOW_NAME) else {
+        continue;
+      };
+      let Ok(hwnd) = window.hwnd() else {
+        continue;
+      };
+      unsafe {
+        ShowWindow(
+          hwnd.0 as _,
+          if should_hide { SW_HIDE } else { SW_SHOWNOACTIVATE },
+        );
+      }
+      hidden_by_us = should_hide;
+    }
+  });
+
+  #[cfg(not(target_os = "windows"))]
+  let _ = app;
+}
+
 /// Bring the discord window to the front, e.g. so its screenshare picker is visible.
 /// Windows only lets us do this right after the user clicked one of our windows.
 #[tauri::command]

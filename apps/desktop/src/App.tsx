@@ -38,6 +38,8 @@ function App() {
       // the tray menu lives in rust, so it has to be told the language
       await invoke("set_language", { language: config.language });
 
+      await invoke("set_hide_in_fullscreen", { value: config.hideInFullscreen });
+
       // restore the pin from the last session; only the overlay window does it
       // so the settings window doesn't apply it twice
       if (getCurrentWindow().label === "main" && config.pin) {

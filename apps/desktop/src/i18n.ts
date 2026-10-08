@@ -108,6 +108,7 @@ const en = {
   "config.showSoundboardButton": "Show sounds button",
   "config.showScreenshareButton": "Show screen share button",
   "config.userSpacing": "Space between users",
+  "config.hideInFullscreen": "Hide while a game is fullscreen",
 
   // updater
   "updater.updating": "Updating...",
@@ -218,6 +219,7 @@ const es: Record<TranslationKey, string> = {
   "config.showSoundboardButton": "Mostrar botón de sonidos",
   "config.showScreenshareButton": "Mostrar botón de transmitir",
   "config.userSpacing": "Espacio entre usuarios",
+  "config.hideInFullscreen": "Ocultar con un juego en pantalla completa",
 
   "updater.updating": "Actualizando...",
   "updater.available": "¡Hay una actualización! Clic aquí para actualizar",

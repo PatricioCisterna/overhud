@@ -29,6 +29,7 @@ export const Configuration = () => {
   const { value: animateAvatars } = useConfigValue("animateAvatars");
   const { value: showScreenshareButton } = useConfigValue("showScreenshareButton");
   const { value: userSpacing } = useConfigValue("userSpacing");
+  const { value: hideInFullscreen } = useConfigValue("hideInFullscreen");
 
   return (
     // the settings window has a fixed height, so the list scrolls instead of being cut off
@@ -78,6 +79,25 @@ export const Configuration = () => {
             }
 
             setLaunchOnStartup(await isEnabled());
+          }}
+        />
+      </div>
+      <div className="flex items-center justify-between h-8 mx-2">
+        <label
+          htmlFor="hideInFullscreen"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {t("config.hideInFullscreen")}
+        </label>
+        <Switch
+          id="hideInFullscreen"
+          checked={hideInFullscreen}
+          onCheckedChange={async () => {
+            const newBool = !hideInFullscreen;
+            await Config.set("hideInFullscreen", newBool);
+            await invoke("set_hide_in_fullscreen", { value: newBool });
+
+            await emit("config_update", await Config.getConfig());
           }}
         />
       </div>

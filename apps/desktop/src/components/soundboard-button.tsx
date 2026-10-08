@@ -4,7 +4,8 @@ import { useTranslation } from "@/i18n";
 import { cn } from "@/utils/tw";
 import { invoke } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
-import { MonitorUp, MoreHorizontal } from "lucide-react";
+import { MonitorUp, MonitorX, MoreHorizontal } from "lucide-react";
+import { useAppStore } from "@/store";
 import { useEffect, useRef } from "react";
 
 const rectOf = (el: HTMLElement) => {
@@ -39,6 +40,7 @@ export const SoundboardButton = ({
   const { t } = useTranslation();
   const areaRef = useRef<HTMLDivElement>(null);
   const soundboardRef = useRef<HTMLButtonElement>(null);
+  const { screensharing } = useAppStore();
 
   useEffect(() => {
     let last = "";
@@ -98,16 +100,18 @@ export const SoundboardButton = ({
         )}
         {showScreenshare && (
           <button
-            title={t("screenshare.toggle")}
-            className={buttonClass}
-            style={background}
+            title={screensharing ? t("screenshare.stop") : t("screenshare.toggle")}
+            className={cn(buttonClass, screensharing && "text-green-400 hover:text-green-300 hover:bg-green-900")}
+            // discord-like green while you are live
+            style={screensharing ? { backgroundColor: "rgba(35, 165, 90, 0.25)" } : background}
             onClick={async () => {
               await emit(Event.ScreenshareToggle);
-              // discord opens its screenshare picker in its own window, which is usually behind the game
-              setTimeout(() => invoke("focus_discord"), 150);
+              // starting opens discord's screenshare picker in its own window, usually behind the game;
+              // stopping needs no picker, so leave the game focused
+              if (!screensharing) setTimeout(() => invoke("focus_discord"), 150);
             }}
           >
-            <MonitorUp size={16} />
+            {screensharing ? <MonitorX size={16} /> : <MonitorUp size={16} />}
           </button>
         )}
       </div>

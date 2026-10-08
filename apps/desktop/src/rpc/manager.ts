@@ -25,6 +25,8 @@ const REQUIRED_SCOPES = [
   "rpc.voice.write",
   // needed for TOGGLE_SCREENSHARE
   "rpc.screenshare.write",
+  // needed for SCREENSHARE_STATE_UPDATE (the stream button shows whether you're live)
+  "rpc.screenshare.read",
 ];
 
 export interface SoundboardGuild {
@@ -447,6 +449,12 @@ class SocketManager {
         evt: RPCEvent.VOICE_CHANNEL_SELECT,
       });
 
+      // know when we start/stop streaming, even if it's done from discord itself
+      this.send({
+        cmd: RPCCommand.SUBSCRIBE,
+        evt: RPCEvent.SCREENSHARE_STATE_UPDATE,
+      });
+
       // try to find the user
       this.requestUserChannel();
 
@@ -475,6 +483,10 @@ class SocketManager {
         ok: !failed,
         message: failed ? (payload.data?.message ?? "unknown error") : null,
       });
+    }
+
+    if (payload.evt === RPCEvent.SCREENSHARE_STATE_UPDATE) {
+      this.store.setScreensharing(!!payload.data?.active);
     }
 
     if (payload.evt === RPCEvent.SPEAKING_START || payload.evt === RPCEvent.SPEAKING_STOP) {

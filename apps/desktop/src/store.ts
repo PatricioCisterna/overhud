@@ -36,6 +36,7 @@ export interface AppState {
   currentChannel: CurrentChannel | null;
   users: Record<string, OverlayedUser>;
   discordErrors: Set<string>;
+  screensharing: boolean;
 }
 
 export interface AppActions {
@@ -51,6 +52,7 @@ export interface AppActions {
   setMe: (user: OverlayedUser | null) => void;
   pushError: (message: string) => void;
   resetErrors: () => void;
+  setScreensharing: (value: boolean) => void;
 }
 
 // sort discord users by name and myself on top
@@ -98,6 +100,11 @@ export const useAppStore = create<AppState & AppActions>()(
     pin: false,
     currentChannel: null,
     users: {},
+    screensharing: false,
+    setScreensharing: value =>
+      set(state => {
+        state.screensharing = value;
+      }),
     setAppVisible: value =>
       set(state => {
         state.visible = value;
